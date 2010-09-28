@@ -1,0 +1,5 @@
+1285164376
+MAPPINGS	/Users/gvaughn/kata/roman/roman.rb	  MAPPINGS =
+MINI_LEXER	/Users/gvaughn/kata/roman/roman.rb	  MINI_LEXER =
+Roman	/Users/gvaughn/kata/roman/roman.rb	module Roman
+arabic	/Users/gvaughn/kata/roman/roman.rb	  def arabic
