@@ -1,4 +1,4 @@
-require '/Users/gvaughn/kata/poker/poker.rb'
+require File.dirname(__FILE__) + '/../poker.rb'
 
 describe 'Poker' do
   it '9 should beat 8' do
