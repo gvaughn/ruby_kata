@@ -1,3 +1,8 @@
+# in current dir just type 'autospec'
+
+# This overrides default behavior looking into subfolders
+# Now, whenever any file changes, re-run everything ending _spec.rb, subfolders or not
+
 Autotest.add_hook(:initialize) do |at|
   at.clear_mappings
   at.add_mapping(/.*/) do |filename, _|
