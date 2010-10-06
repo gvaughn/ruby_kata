@@ -8,6 +8,7 @@ class Card
     'K' => 13,
   }
 
+  #hello
   def initialize(val)
     @face_value = val
     @face_value = MAP[val] if MAP.has_key? val
