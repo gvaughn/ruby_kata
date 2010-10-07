@@ -15,8 +15,13 @@ describe 'Poker' do
     ['4','3'],
     ['3','2'],
   ].each do |cards|
-    it "#{cards[0]} should beat #{cards[1]}" do
-      Card.new(cards[0]).should > Card.new(cards[1])
+
+    first = cards[0]
+
+    second = cards[1]
+
+    it "#{first} should beat #{second}" do
+      Card.new(first).should > Card.new(second)
     end
   end
 end
