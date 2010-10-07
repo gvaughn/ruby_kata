@@ -1,6 +1,6 @@
 class Card
   include Comparable
-  attr_accessor :face_value
+  attr_reader :face_value
   
   MAP =
   {
@@ -8,7 +8,6 @@ class Card
     'K' => 13,
   }
 
-  #hello
   def initialize(val)
     @face_value = val
     @face_value = MAP[val] if MAP.has_key? val
