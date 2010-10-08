@@ -1,7 +1,7 @@
 require File.dirname(__FILE__) + '/../lib/poker.rb'
 
-describe 'Poker' do
-  describe Card do
+describe 'poker' do
+  describe 'card comparison' do
     [
       ['A','K'],
       ['K','Q'],

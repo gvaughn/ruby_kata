@@ -1,6 +1,7 @@
 class Card
   include Comparable
   attr_reader :face_value
+  attr_reader :suit
   
   MAP =
   {
@@ -11,9 +12,16 @@ class Card
     'T' => 10,
   }
 
+  def get_face(f)
+    @face_value = f.to_i
+
+    @face_value = MAP[f] if MAP.has_key? f 
+  end
+
   def initialize(val)
-    @face_value = val.to_i
-    @face_value = MAP[val] if MAP.has_key? val
+    get_face val.to_s.take(1).to_s
+
+    suit = val[1] if val.to_s.length > 1
   end
   
   def <=>(other)
