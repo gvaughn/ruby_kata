@@ -24,6 +24,11 @@ describe 'poker' do
     it "accepts suit" do
       Card.new('KH').suit == Card.new('5H').suit
     end
-    
+  end
+  
+  describe 'hand' do
+    it 'knowns how many cards it consists of' do
+      Hand.new('5H 5C 6S 7S KD').count == 5
+    end
   end
 end
