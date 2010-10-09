@@ -27,3 +27,13 @@ class Card
     face_value <=> other.face_value
   end
 end
+
+class Hand
+  def initialize(val)
+    @cards = val.split.map {|c| Card.new(c)}
+  end
+  
+  def count
+    @cards.count
+  end
+end
