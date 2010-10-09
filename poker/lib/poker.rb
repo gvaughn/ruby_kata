@@ -7,8 +7,8 @@ class Card
   FACE_MAP.merge! FACE_CARDS
 
   def initialize(val)
-    @face_value = FACE_MAP[val[0]]
-    @suit = val[1]
+    @face_value = FACE_MAP[val[0..1]]
+    @suit = val[-1..1]
   end
   
   def <=>(other)
