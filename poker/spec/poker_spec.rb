@@ -21,10 +21,6 @@ describe 'poker' do
       end
     end
   
-    it "equivalently accepts int or string card values" do
-      Card.new('9').should == Card.new(9)
-    end
-  
     it "accepts suit" do
       Card.new('KH').suit == Card.new('5H').suit
     end
