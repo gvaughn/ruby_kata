@@ -17,11 +17,24 @@ class Card
 end
 
 class Hand
+  include Comparable
   def initialize(val)
     @cards = val.split.map {|c| Card.new(c)}
   end
   
   def count
     @cards.count
+  end
+  
+  def <=>(other)
+    power <=> other.power
+  end
+  
+  def power
+    @power ||= freq_map.first.last
+  end
+  
+  def freq_map
+    @freq_map ||= @cards.inject(Hash.new(0)) {|m, c| m[c.face_value] += 1; m}.sort {|a,b| b.last <=> a.last}
   end
 end
