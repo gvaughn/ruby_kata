@@ -30,5 +30,9 @@ describe 'poker' do
     it 'knowns how many cards it consists of' do
       Hand.new('5H 5C 6S 7S KD').count == 5
     end
+    
+    it "pair should beat nothing" do
+      Hand.new('5H 5C 8S 9S 2D').should > Hand.new('2H 4C 6S 8D 10H')
+    end
   end
 end
