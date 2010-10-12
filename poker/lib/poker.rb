@@ -20,6 +20,8 @@ class Hand
   include Comparable
   def initialize(val)
     @cards = val.split.map {|c| Card.new(c)}
+
+    @freq_map = @cards.inject(Hash.new(0)) {|m, c| m[c.face_value] += 1; m}
   end
   
   def count
@@ -32,14 +34,10 @@ class Hand
   end
   
   def max_freq
-    freq_map.map{|m| m[1]}.max
-  end
-  
-  def freq_map
-    @cards.inject(Hash.new(0)) {|m, c| m[c.face_value] += 1; m}
+    @freq_map.map{|m| m[1]}.max
   end
   
   def strength_card
-    freq_map.sort_by{|a| [-a[1],-a[0]]}.first[0]
+    @freq_map.max {|a,o| [a[1],a[0]] <=> [o[1],o[0]] }
   end
 end
