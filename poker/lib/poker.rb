@@ -32,11 +32,11 @@ class Hand
   end
   
   def max_freq
-    freq_map.first[1]
+    freq_map.map{|m| m[1]}.max
   end
   
   def freq_map
-    @cards.inject(Hash.new(0)) {|m, c| m[c.face_value] += 1; m}.sort_by {|a| -a[1]}
+    @cards.inject(Hash.new(0)) {|m, c| m[c.face_value] += 1; m}
   end
   
   def strength_card
