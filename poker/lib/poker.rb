@@ -27,18 +27,19 @@ class Hand
   end
   
   def <=>(other)
-    13 *(max_freq <=> other.max_freq) + (high_card <=> other.high_card)
+    13 * (max_freq <=> other.max_freq) + 
+    (strength_card <=> other.strength_card)
   end
   
   def max_freq
-    @max_freq ||= freq_map.first[1]
+    freq_map.first[1]
   end
   
   def freq_map
-    @freq_map ||= @cards.inject(Hash.new(0)) {|m, c| m[c.face_value] += 1; m}.sort_by {|a| -a.last}
+    @cards.inject(Hash.new(0)) {|m, c| m[c.face_value] += 1; m}.sort_by {|a| -a[1]}
   end
   
-  def high_card
-    @cards.sort_by {|a| -a.face_value}.first.face_value
+  def strength_card
+    freq_map.sort_by{|a| [-a[1],-a[0]]}.first[0]
   end
 end

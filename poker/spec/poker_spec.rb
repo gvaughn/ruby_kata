@@ -27,6 +27,14 @@ describe 'poker' do
   end
   
   describe 'hand' do
+    it "pair of 3s beat a pair of 2s" do
+      Hand.new('3A 3B 5C 7D 9E').should > Hand.new('2A 2B 5C 7D AE')
+    end
+
+    it "4 of a kind should beat 3 of a kind" do
+      Hand.new('2H 2C 2D 2S JC').should > Hand.new('5H 5C 8S 9S 2D')
+    end
+    
     it 'knows how many cards it consists of' do
       Hand.new('5H 5C 6S 7S KD').count == 5
     end
@@ -43,13 +51,8 @@ describe 'poker' do
       Hand.new('4H 4C 4D 4S JC').should > Hand.new('5H 5C 8S 9S 2D')
     end
 
-    it "4 of a kind should beat 3 of a kind" do
-      Hand.new('2H 2C 2D 2S JC').should > Hand.new('5H 5C 8S 9S 2D')
-    end
-    
     it "A high beats K high" do
       Hand.new("AA 2B 4C 6D 8E").should > Hand.new("KA 2B 4C 6D 8E")
     end
-
   end
 end
