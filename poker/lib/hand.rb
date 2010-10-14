@@ -12,16 +12,20 @@ class Hand
   end
   
   def <=>(other)
-    13 * (max_freq <=> other.max_freq) + 
-    (strength_card <=> other.strength_card)
+    strength <=> other.strength
   end
-  
+
+  def strength
+    pair_like = @freq_map.select {|face, freq| freq > 1}.to_a
+    kickers = @freq_map.select {|face, freq| freq == 1}.map {|face, freq| face}.sort
+
+    strength = pair_like.reduce(0) {|sum, pair| sum += 15**(pair.last + 3) * pair.first}
+    kickers.each_with_index {|face, i| strength += 15**i * face}
+    strength
+  end
+
   def max_freq
     @freq_map.map{|m| m[1]}.max
-  end
-  
-  def strength_card
-    @freq_map.max {|a,b| a.reverse <=> b.reverse }
   end
   
   def to_s
