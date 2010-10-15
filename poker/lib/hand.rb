@@ -11,16 +11,30 @@ class StrengthDigit
   end
 end
 
+class FrequencyStats
+  def initialize(cards)
+    @freqs = cards.reduce(Hash.new(0)) {|m, c| m[c.face_value] += 1; m}
+  end
+  
+  def map_pair_like
+    @freqs.select {|face, freq| freq > 1}.map {|face, freq| yield face, freq}
+  end
+  
+  def map_sorted_kickers
+    n = -1
+    @freqs.select {|face, freq| freq == 1}.sort.map {|face, freq| n += 1; yield face, n}
+  end
+end
+
 class Hand
   include Comparable
   
   def initialize(val)
     @cards = val.split.map {|c| Card.new(c)}
-
-    @freq_map = @cards.inject(Hash.new(0)) {|m, c| m[c.face_value] += 1; m}
     
-    @strengths = @freq_map.select {|face, freq| freq > 1}.map {|face, freq| StrengthDigit.new(face, freq + 3)}
-    @freq_map.select {|face, freq| freq == 1}.sort.each_with_index {|pair, i| @strengths << StrengthDigit.new(pair.first, i)}
+    stats = FrequencyStats.new @cards
+    @strengths = stats.map_pair_like {|face,freq| StrengthDigit.new(face, freq+3)}
+    @strengths += stats.map_sorted_kickers {|face, sort_index| StrengthDigit.new(face, sort_index)}
   end
   
   def count
@@ -32,7 +46,7 @@ class Hand
   end
   
   def strength
-    @strengths.reduce(0) {|sum, s| sum += s.strength}
+    @strengths.reduce(0) {|sum, s| sum + s.strength}
   end
 
   def to_s
