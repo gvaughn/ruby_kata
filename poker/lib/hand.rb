@@ -16,8 +16,8 @@ class FrequencyStats
     @freqs = cards.reduce(Hash.new(0)) {|m, c| m[c.face_value] += 1; m}
   end
   
-  def map_pair_like
-    @freqs.select {|face, freq| freq > 1}.map {|face, freq| yield face, freq}
+  def map_pair_like(&block)
+    @freqs.select {|face, freq| freq > 1}.map &block
   end
   
   def map_sorted_kickers
