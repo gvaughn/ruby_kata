@@ -1,4 +1,6 @@
 class StrengthDigit
+  include Comparable
+  
   BASE = 15
   attr_reader :multiplier, :exponent
   
@@ -8,6 +10,10 @@ class StrengthDigit
   
   def strength
     multiplier * BASE**exponent
+  end
+  
+  def <=>(other)
+    [exponent, multiplier] <=> [other.exponent, other,multiplier]
   end
 end
 
@@ -23,6 +29,12 @@ class FrequencyStats
   def map_sorted_kickers
     n = -1
     @freqs.select {|face, freq| freq == 1}.sort.map {|face, freq| n += 1; yield face, n}
+  end
+  
+  def strength
+    # when @freqs.count == 5
+    n = -1
+    @freqs.sort.map {|pair| n +=1; StrengthDigit.new pair.first, n}
   end
 end
 
