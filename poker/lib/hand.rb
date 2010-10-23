@@ -41,27 +41,12 @@ class FrequencyStats
   end
   
   def strength
-    return high_card_strength       if @freqs.count == 5
-    return pair_strength            if @freqs.count == 4
-    return two_pair_strength        if @freqs.count == 3 && max_freq == 2
-    return three_of_a_kind_strength if @freqs.count == 3 && max_freq == 3
+    return sorted_progression(0)  if @freqs.count == 5  #high card
+    return sorted_progression(2)  if @freqs.count == 4 #pair
+    return sorted_progression(4)  if @freqs.count == 3 && max_freq == 2 #2 pair
+    return sorted_progression(5)  if @freqs.count == 3 && max_freq == 3 #3 of a kind
   end
   
-  def high_card_strength
-    sorted_progression(0)
-  end
-  
-  def pair_strength
-    sorted_progression(2)
-  end
-  
-  def two_pair_strength
-    sorted_progression(4)
-  end
-
-  def three_of_a_kind_strength
-    sorted_progression(5)
-  end
 end
 
 class Hand
