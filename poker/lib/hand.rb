@@ -32,7 +32,10 @@ class FrequencyStats
   end
   
   def strength
-    # when @freqs.count == 5
+    return high_card_strength if @freqs.count == 5
+  end
+  
+  def high_card_strength
     n = -1
     @freqs.sort.map {|pair| n +=1; StrengthDigit.new pair.first, n}
   end
