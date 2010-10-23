@@ -27,16 +27,13 @@ describe 'frequency stats' do
     FrequencyStats.new str.split.map {|c| Card.new(c)}
   end
   
-  it 'creates maximum strength of 4 for high card hand' do
-    stats('2H 4C 6S 8D TH').strength.max.exponent.should be 4
-  end
-  
-  it 'creates maximum strength of 5 for pair hand' do
-    stats('2A 2B 5C 7D AE').strength.max.exponent.should be 5
-  end
-  
-  it 'creates maximum strength of 6 for 2 pair hand' do
-    stats("2H 2S 3C 3S 4D").strength.max.exponent.should be 6
+  [['creates maximum strength of 4 for high card hand',   '2H 4C 6S 8D TH', 4 ],
+   ['creates maximum strength of 5 for pair hand',        '2A 2B 5C 7D AE', 5],
+   ['creates maximum strength of 6 for 2 pair hand',      "2H 2S 3C 3S 4D", 6],
+  ].each do |desc, cards, expected|
+    it desc do
+      stats(cards).strength.max.exponent.should be expected
+    end
   end
   
 end
