@@ -22,6 +22,10 @@ class FrequencyStats
     @freqs = cards.reduce(Hash.new(0)) {|m, c| m[c.face_value] += 1; m}
   end
   
+  def max_freq
+    @max_freq ||= @freqs.collect {|c, f| f}.max
+  end
+  
   def map_pair_like(&block)
     @freqs.select {|face, freq| freq > 1}.map &block
   end
@@ -34,7 +38,7 @@ class FrequencyStats
   def strength
     return high_card_strength if @freqs.count == 5
     return pair_strength      if @freqs.count == 4
-    return two_pair_strength  if @freqs.count == 3 && @freqs.collect {|c, f| f}.max == 2
+    return two_pair_strength  if @freqs.count == 3 && max_freq == 2
   end
   
   def high_card_strength
