@@ -36,9 +36,10 @@ class FrequencyStats
   end
   
   def strength
-    return high_card_strength if @freqs.count == 5
-    return pair_strength      if @freqs.count == 4
-    return two_pair_strength  if @freqs.count == 3 && max_freq == 2
+    return high_card_strength       if @freqs.count == 5
+    return pair_strength            if @freqs.count == 4
+    return two_pair_strength        if @freqs.count == 3 && max_freq == 2
+    return three_of_a_kind_strength if @freqs.count == 3 && max_freq == 3
   end
   
   def high_card_strength
@@ -54,6 +55,11 @@ class FrequencyStats
   def two_pair_strength
     n = -1
     @freqs.sort.map {|pair| n +=1; StrengthDigit.new pair.first, n + 4}
+  end
+
+  def three_of_a_kind_strength
+    n = -1
+    @freqs.sort.map {|pair| n +=1; StrengthDigit.new pair.first, n + 5}
   end
 end
 
