@@ -35,6 +35,11 @@ class FrequencyStats
     @freqs.select {|face, freq| freq == 1}.sort.map {|face, freq| n += 1; yield face, n}
   end
   
+  def sorted_progression(offset) #lousy name, getting tired
+    n = -1
+    @freqs.sort.map {|pair| n +=1; StrengthDigit.new pair.first, n + offset}
+  end
+  
   def strength
     return high_card_strength       if @freqs.count == 5
     return pair_strength            if @freqs.count == 4
@@ -43,23 +48,19 @@ class FrequencyStats
   end
   
   def high_card_strength
-    n = -1
-    @freqs.sort.map {|pair| n +=1; StrengthDigit.new pair.first, n}
+    sorted_progression(0)
   end
   
   def pair_strength
-    n = -1
-    @freqs.sort.map {|pair| n +=1; StrengthDigit.new pair.first, n + 2}
+    sorted_progression(2)
   end
   
   def two_pair_strength
-    n = -1
-    @freqs.sort.map {|pair| n +=1; StrengthDigit.new pair.first, n + 4}
+    sorted_progression(4)
   end
 
   def three_of_a_kind_strength
-    n = -1
-    @freqs.sort.map {|pair| n +=1; StrengthDigit.new pair.first, n + 5}
+    sorted_progression(5)
   end
 end
 
