@@ -15,6 +15,10 @@ class StrengthDigit
   def <=>(other)
     [exponent, multiplier] <=> [other.exponent, other,multiplier]
   end
+  
+  def to_s
+    "#{multiplier} ^ #{exponent}"
+  end
 end
 
 class FrequencyStats
@@ -26,18 +30,9 @@ class FrequencyStats
     @max_freq ||= @freqs.collect {|c, f| f}.max
   end
   
-  def map_pair_like(&block)
-    @freqs.select {|face, freq| freq > 1}.map &block
-  end
-  
-  def map_sorted_kickers
-    n = -1
-    @freqs.select {|face, freq| freq == 1}.sort.map {|face, freq| n += 1; yield face, n}
-  end
-  
   def sorted_progression(offset) #lousy name, getting tired
     n = -1
-    @freqs.sort.map {|pair| n +=1; StrengthDigit.new pair.first, n + offset}
+    @freqs.sort{|a,b| a.reverse <=> b.reverse}.map {|pair| n +=1; StrengthDigit.new pair.first, n + offset}
   end
   
   def strength
@@ -45,6 +40,11 @@ class FrequencyStats
     return sorted_progression(2)  if @freqs.count == 4 #pair
     return sorted_progression(4)  if @freqs.count == 3 && max_freq == 2 #2 pair
     return sorted_progression(5)  if @freqs.count == 3 && max_freq == 3 #3 of a kind
+    #straight
+    #flush
+    #full house
+    return sorted_progression(10)  if @freqs.count == 2 && max_freq == 4 #4 of a kind
+    #straight flush (royal is covered)
   end
   
 end
@@ -52,12 +52,10 @@ end
 class Hand
   include Comparable
   
+  attr_accessor :stats
   def initialize(val)
     @cards = val.split.map {|c| Card.new(c)}
-    
-    stats = FrequencyStats.new @cards
-    @strengths = stats.map_pair_like {|face,freq| StrengthDigit.new(face, freq+3)}
-    @strengths += stats.map_sorted_kickers {|face, sort_index| StrengthDigit.new(face, sort_index)}
+    @stats = FrequencyStats.new @cards
   end
   
   def count
@@ -69,10 +67,10 @@ class Hand
   end
   
   def strength
-    @strengths.reduce(0) {|sum, s| sum + s.strength}
+    @stats.strength.reduce(0) {|sum, s| sum + s.strength}
   end
 
   def to_s
-    @cards.join ' '
+    "#{@cards.join ' '} str: #{@stats.strength.reverse.join ','}"
   end
 end
