@@ -31,4 +31,8 @@ describe 'frequency stats' do
     stats('2H 4C 6S 8D TH').strength.max.exponent.should be 4
   end
   
+  it 'creates maximum strength of  for pair hand' do
+    stats('2A 2B 5C 7D AE').strength.max.exponent.should be 5
+  end
+  
 end
