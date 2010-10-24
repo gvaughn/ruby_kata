@@ -29,14 +29,14 @@ class FrequencyStats
     def @freqs.value_by_desc_freq
       self.sort{|a,b| b.reverse <=> a.reverse}.map{|c,f| c}
     end
+    
+    def @freqs.max
+      self.map {|c, f| f}.max
+    end
   end
   
   def freq_count
     @freqs.count
-  end
-  
-  def max_freq
-    @max_freq ||= @freqs.collect {|c, f| f}.max
   end
   
 end
@@ -84,7 +84,7 @@ class Hand
   end
   
   def strengths
-    strength_digits RULES.find{|r| r.first.call(stats.freq_count, stats.max_freq, is_straight?, is_flush?)}.last
+    strength_digits RULES.find{|r| r.first.call(stats.freq_count, stats.freqs.max, is_straight?, is_flush?)}.last
   end
   
   def strength
