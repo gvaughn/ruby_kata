@@ -25,15 +25,15 @@ class Hand
   include Comparable
   
   RULES = [
-    [Proc.new {|fcount, fmax, straight, flush| straight && flush}, 12], # straight flush
+    [Proc.new {|fcount, fmax, straight, flush| straight && flush},        12], # straight flush (and royal flush)
     [Proc.new {|fcount, fmax, straight, flush| fcount == 2 && fmax == 4}, 11], # 4 of a kind
     [Proc.new {|fcount, fmax, straight, flush| fcount == 2 && fmax == 3}, 10], # full house
-    [Proc.new {|fcount, fmax, straight, flush| flush}, 9], # flush
-    [Proc.new {|fcount, fmax, straight, flush| straight}, 8], # straight
-    [Proc.new {|fcount, fmax, straight, flush| fcount == 3 && fmax == 3}, 7], # 3 of a kind
-    [Proc.new {|fcount, fmax, straight, flush| fcount == 3 && fmax == 2}, 6], # 2 pair
-    [Proc.new {|fcount, fmax, straight, flush| fcount == 4}, 5], # pair
-    [Proc.new {|fcount, fmax, straight, flush| fcount == 5}, 4], # high card
+    [Proc.new {|fcount, fmax, straight, flush| flush},                     9], # flush
+    [Proc.new {|fcount, fmax, straight, flush| straight},                  8], # straight
+    [Proc.new {|fcount, fmax, straight, flush| fcount == 3 && fmax == 3},  7], # 3 of a kind
+    [Proc.new {|fcount, fmax, straight, flush| fcount == 3 && fmax == 2},  6], # 2 pair
+    [Proc.new {|fcount, fmax, straight, flush| fcount == 4},               5], # pair
+    [Proc.new {|fcount, fmax, straight, flush| fcount == 5},               4], # high card
   ]
   
   attr_accessor :stats
@@ -73,12 +73,9 @@ class Hand
     strength <=> other.strength
   end
   
-  def strength_digits(max_exponent)
-    stats.desc_face_map_with_index {|c,n| StrengthDigit.new c, max_exponent - n}
-  end
-  
   def strengths
-    strength_digits RULES.find{|r| r.first.call(stats.count, stats.max, is_straight?, is_flush?)}.last
+    max_exponent = RULES.find{|r| r.first.call(stats.count, stats.max, is_straight?, is_flush?)}.last
+    stats.desc_face_map_with_index {|card_value, index| StrengthDigit.new card_value, max_exponent - index}
   end
   
   def strength
