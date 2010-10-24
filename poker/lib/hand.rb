@@ -35,7 +35,7 @@ class FrequencyStats
   end
   
   def is_straight
-    @is_straight ||= @freqs.value_by_desc_freq.each_cons(2).map{|a,b| a - b}.all? {|a| a == 1}
+    @is_straight ||= @freqs.value_by_desc_freq.each_cons(2).map{|a,b| a - b == 1}.all?
   end
   
   def is_flush
