@@ -39,7 +39,7 @@ class FrequencyStats
   end
   
   def is_flush
-    @is_flush ||= @cards.each_cons(2).map{|a,b| a.suit == b.suit}.all? {|a| a}
+    @is_flush ||= @cards.each_cons(2).map{|a,b| a.suit == b.suit}.all?
   end
   
   def strength_digits(max_exponent)
