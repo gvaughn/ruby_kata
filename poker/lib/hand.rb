@@ -33,20 +33,19 @@ class FrequencyStats
     @max_freq ||= @freqs.collect {|c, f| f}.max
   end
   
-  def strength_digits(offset)
-    max_exponent = offset + @freqs.count - 1
+  def strength_digits(max_exponent)
     @freqs.value_by_desc_freq.map.with_index {|c,n| StrengthDigit.new c, max_exponent - n}
   end
   
   def strength
-    return strength_digits(0)  if @freqs.count == 5  #high card
-    return strength_digits(2)  if @freqs.count == 4 #pair
-    return strength_digits(4)  if @freqs.count == 3 && max_freq == 2 #2 pair
-    return strength_digits(5)  if @freqs.count == 3 && max_freq == 3 #3 of a kind
+    return strength_digits(4)  if @freqs.count == 5  #high card
+    return strength_digits(5)  if @freqs.count == 4 #pair
+    return strength_digits(6)  if @freqs.count == 3 && max_freq == 2 #2 pair
+    return strength_digits(7)  if @freqs.count == 3 && max_freq == 3 #3 of a kind
     #straight
     #flush
     #full house
-    return strength_digits(10)  if @freqs.count == 2 && max_freq == 4 #4 of a kind
+    return strength_digits(11)  if @freqs.count == 2 && max_freq == 4 #4 of a kind
     #straight flush (royal is covered)
   end
   
