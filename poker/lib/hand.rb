@@ -55,7 +55,8 @@ class Hand
   end
   
   def strengths
-    max_exponent = RULES.find{|r| r.first.call(@stats.count, @stats.max, is_straight?, is_flush?)}.last
+    inputs = [@stats.count, @stats.max, is_straight?, is_flush?]
+    max_exponent = RULES.find{|r| r.first.call inputs}.last
     @stats.desc_face_map_with_index {|card_value, index| [card_value, max_exponent - index]}
   end
   
