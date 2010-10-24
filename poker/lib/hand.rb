@@ -66,6 +66,6 @@ class Hand
   end
   
   def to_s
-    "#{@cards.join ' '} str: #{@stats.strength.join ','}"
+    "#{@cards.join ' '} str: #{strengths.join ','}"
   end
 end
