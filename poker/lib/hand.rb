@@ -38,14 +38,6 @@ class FrequencyStats
     @max_freq ||= @freqs.collect {|c, f| f}.max
   end
   
-  def is_straight
-    @is_straight ||= @freqs.value_by_desc_freq.each_cons(2).map{|a,b| a - b == 1}.all?
-  end
-  
-  def is_flush
-    @is_flush ||= @cards.each_cons(2).map{|a,b| a.suit == b.suit}.all?
-  end
-  
   def strength_digits(max_exponent)
     @freqs.value_by_desc_freq.map.with_index {|c,n| StrengthDigit.new c, max_exponent - n}
   end
@@ -78,12 +70,20 @@ class Hand
     @cards.count
   end
   
+  def is_straight?
+    @is_straight ||= @cards.sort.reverse.each_cons(2).map{|a,b| a.face_value - b.face_value == 1}.all?
+  end
+  
+  def is_flush?
+    @is_flush ||= @cards.each_cons(2).map{|a,b| a.suit == b.suit}.all?
+  end
+  
   def <=>(other)
     strength <=> other.strength
   end
   
   def strengths
-    stats.strength_digits RULES.find{|r| r.first.call(stats.freq_count, stats.max_freq, stats.is_straight, stats.is_flush)}.last
+    stats.strength_digits RULES.find{|r| r.first.call(stats.freq_count, stats.max_freq, is_straight?, is_flush?)}.last
   end
   
   def strength
