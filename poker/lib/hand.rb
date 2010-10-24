@@ -39,14 +39,15 @@ class Hand
   attr_accessor :stats
   
   def initialize(val)
-    @cards = val.split.map {|c| Card.new(c)}
+    @cards = val.split.map {|c| Card.new(c)}.sort
     @stats = create_stats @cards
   end
   
   def create_stats(cards)
     freqs = cards.reduce(Hash.new(0)) {|m, c| m[c.face_value] += 1; m}
-    def freqs.value_by_desc_freq
-      self.sort{|a,b| b.reverse <=> a.reverse}.map{|c,f| c}
+    
+    def freqs.desc_face_map_with_index &block
+      self.sort{|a,b| b.reverse <=> a.reverse}.map{|c,f| c}.map.with_index &block
     end
     
     def freqs.max
@@ -61,7 +62,7 @@ class Hand
   end
   
   def is_straight?
-    @is_straight ||= @cards.sort.reverse.each_cons(2).map{|a,b| a.face_value - b.face_value == 1}.all?
+    @is_straight ||= @cards.each_cons(2).map{|a,b| b.face_value - a.face_value == 1}.all?
   end
   
   def is_flush?
@@ -73,7 +74,7 @@ class Hand
   end
   
   def strength_digits(max_exponent)
-    stats.value_by_desc_freq.map.with_index {|c,n| StrengthDigit.new c, max_exponent - n}
+    stats.desc_face_map_with_index {|c,n| StrengthDigit.new c, max_exponent - n}
   end
   
   def strengths
