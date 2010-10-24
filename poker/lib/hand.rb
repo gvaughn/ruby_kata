@@ -33,16 +33,20 @@ class FrequencyStats
     @max_freq ||= @freqs.collect {|c, f| f}.max
   end
   
+  def is_straight
+    @freqs.value_by_desc_freq.each_cons(2).map{|a,b| a - b}.all? {|a| a == 1}
+  end
+  
   def strength_digits(max_exponent)
     @freqs.value_by_desc_freq.map.with_index {|c,n| StrengthDigit.new c, max_exponent - n}
   end
   
   def strength
-    return strength_digits(4)  if @freqs.count == 5  #high card
+    return strength_digits(4)  if @freqs.count == 5 && !is_straight #high card
     return strength_digits(5)  if @freqs.count == 4 #pair
     return strength_digits(6)  if @freqs.count == 3 && max_freq == 2 #2 pair
     return strength_digits(7)  if @freqs.count == 3 && max_freq == 3 #3 of a kind
-    #straight
+    return strength_digits(8)  if @freqs.count == 5 && is_straight #straight
     #flush
     return strength_digits(10)  if @freqs.count == 2 && max_freq == 3 #full house
     return strength_digits(11)  if @freqs.count == 2 && max_freq == 4 #4 of a kind
