@@ -13,11 +13,17 @@ class Hand
     [Proc.new {|fcount, fmax, straight, flush| fcount == 5},               4], # high card
   ]
   
-  attr_accessor :stats
-  
   def initialize(str)
     create_cards str
     create_stats
+  end
+  
+  def create_cards(str)
+    @cards = str.split.map {|c| Card.new(c)}.sort
+    
+    def @cards.match_each_pair
+      self.each_cons(2).map{|a,b| yield a,b}.all?
+    end
   end
   
   def create_stats
@@ -29,14 +35,6 @@ class Hand
     
     def @stats.max
       self.map {|c, f| f}.max
-    end
-  end
-  
-  def create_cards(str)
-    @cards = str.split.map {|c| Card.new(c)}.sort
-    
-    def @cards.match_each_pair
-      self.each_cons(2).map{|a,b| yield a,b}.all?
     end
   end
   
@@ -57,8 +55,8 @@ class Hand
   end
   
   def strengths
-    max_exponent = RULES.find{|r| r.first.call(stats.count, stats.max, is_straight?, is_flush?)}.last
-    stats.desc_face_map_with_index {|card_value, index| [card_value, max_exponent - index]}
+    max_exponent = RULES.find{|r| r.first.call(@stats.count, @stats.max, is_straight?, is_flush?)}.last
+    @stats.desc_face_map_with_index {|card_value, index| [card_value, max_exponent - index]}
   end
   
   def strength
