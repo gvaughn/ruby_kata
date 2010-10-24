@@ -35,10 +35,6 @@ class FrequencyStats
     end
   end
   
-  def freq_count
-    @freqs.count
-  end
-  
 end
 
 class Hand
@@ -84,7 +80,7 @@ class Hand
   end
   
   def strengths
-    strength_digits RULES.find{|r| r.first.call(stats.freq_count, stats.freqs.max, is_straight?, is_flush?)}.last
+    strength_digits RULES.find{|r| r.first.call(stats.freqs.count, stats.freqs.max, is_straight?, is_flush?)}.last
   end
   
   def strength
