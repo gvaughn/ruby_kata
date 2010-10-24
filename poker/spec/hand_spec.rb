@@ -33,7 +33,7 @@ describe 'frequency stats' do
    ['creates maximum strength of 6 for 2 pair hand',         "2H 2S 3C 3S 4D", 6],
    ['creates maximum strength of 7 for 3 of a kind hand',    '4H 4C 4D 2H JC', 7],
    ['creates maximum strength of 8 for straight hand',       '4H 5C 6D 7S 8C', 8],
-   ['creates maximum strength of 9 for flush hand',          '4H 5H 6H 7H 8H', 9],
+   ['creates maximum strength of 9 for flush hand',          '4H 5H 6H TH 8H', 9],
    ['creates maximum strength of 10 for full house hand',    '4H 4C 4D 3S 3C', 10],
    ['creates maximum strength of 11 for 4 of a kind hand',    '4H 4C 4D 4S JC', 11],
   ].each do |desc, cards, expected|

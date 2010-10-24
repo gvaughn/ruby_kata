@@ -23,6 +23,7 @@ end
 
 class FrequencyStats
   def initialize(cards)
+    @cards = cards
     @freqs = cards.reduce(Hash.new(0)) {|m, c| m[c.face_value] += 1; m}
     def @freqs.value_by_desc_freq
       self.sort{|a,b| b.reverse <=> a.reverse}.map{|c,f| c}
@@ -34,7 +35,11 @@ class FrequencyStats
   end
   
   def is_straight
-    @freqs.value_by_desc_freq.each_cons(2).map{|a,b| a - b}.all? {|a| a == 1}
+    @is_straight ||= @freqs.value_by_desc_freq.each_cons(2).map{|a,b| a - b}.all? {|a| a == 1}
+  end
+  
+  def is_flush
+    @is_flush ||= @cards.each_cons(2).map{|a,b| a.suit == b.suit}.all? {|a| a}
   end
   
   def strength_digits(max_exponent)
@@ -42,12 +47,12 @@ class FrequencyStats
   end
   
   def strength
-    return strength_digits(4)  if @freqs.count == 5 && !is_straight #high card
+    return strength_digits(4)  if @freqs.count == 5 && !is_straight && !is_flush #high card
     return strength_digits(5)  if @freqs.count == 4 #pair
     return strength_digits(6)  if @freqs.count == 3 && max_freq == 2 #2 pair
     return strength_digits(7)  if @freqs.count == 3 && max_freq == 3 #3 of a kind
-    return strength_digits(8)  if @freqs.count == 5 && is_straight #straight
-    #flush
+    return strength_digits(8)  if @freqs.count == 5 && is_straight && !is_flush #straight
+    return strength_digits(9)  if @freqs.count == 5 && is_flush #flush
     return strength_digits(10)  if @freqs.count == 2 && max_freq == 3 #full house
     return strength_digits(11)  if @freqs.count == 2 && max_freq == 4 #4 of a kind
     #straight flush (royal is covered)
