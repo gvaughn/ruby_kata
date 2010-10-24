@@ -3,8 +3,6 @@
 require './lib/hand.rb'
 require './lib/card.rb'
 
-winner = []
-
 winner = File.readlines('poker.txt').collect do |line|
   Hand.new(line[0,14]) <=> Hand.new(line[15,14])
 end
