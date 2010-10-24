@@ -52,10 +52,10 @@ class FrequencyStats
     return strength_digits(6)  if @freqs.count == 3 && max_freq == 2 #2 pair
     return strength_digits(7)  if @freqs.count == 3 && max_freq == 3 #3 of a kind
     return strength_digits(8)  if @freqs.count == 5 && is_straight && !is_flush #straight
-    return strength_digits(9)  if @freqs.count == 5 && is_flush #flush
+    return strength_digits(9)  if @freqs.count == 5 && is_flush && !is_straight #flush
     return strength_digits(10)  if @freqs.count == 2 && max_freq == 3 #full house
     return strength_digits(11)  if @freqs.count == 2 && max_freq == 4 #4 of a kind
-    #straight flush (royal is covered)
+    return strength_digits(12)  if @freqs.count == 5 && is_straight && is_flush #straight flush (royal is covered)
   end
   
 end
