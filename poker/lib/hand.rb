@@ -22,8 +22,9 @@ class StrengthDigit
 end
 
 class FrequencyStats
+  attr_reader :freqs
+  
   def initialize(cards)
-    @cards = cards
     @freqs = cards.reduce(Hash.new(0)) {|m, c| m[c.face_value] += 1; m}
     def @freqs.value_by_desc_freq
       self.sort{|a,b| b.reverse <=> a.reverse}.map{|c,f| c}
@@ -38,16 +39,11 @@ class FrequencyStats
     @max_freq ||= @freqs.collect {|c, f| f}.max
   end
   
-  def strength_digits(max_exponent)
-    @freqs.value_by_desc_freq.map.with_index {|c,n| StrengthDigit.new c, max_exponent - n}
-  end
-  
 end
 
 class Hand
   include Comparable
   
-  MAX_EXPONENT = 12
   RULES = [
     [Proc.new {|fcount, fmax, straight, flush| straight && flush}, 12], # straight flush
     [Proc.new {|fcount, fmax, straight, flush| fcount == 2 && fmax == 4}, 11], # 4 of a kind
@@ -61,6 +57,7 @@ class Hand
   ]
   
   attr_accessor :stats
+  
   def initialize(val)
     @cards = val.split.map {|c| Card.new(c)}
     @stats = FrequencyStats.new @cards
@@ -82,8 +79,12 @@ class Hand
     strength <=> other.strength
   end
   
+  def strength_digits(max_exponent)
+    stats.freqs.value_by_desc_freq.map.with_index {|c,n| StrengthDigit.new c, max_exponent - n}
+  end
+  
   def strengths
-    stats.strength_digits RULES.find{|r| r.first.call(stats.freq_count, stats.max_freq, is_straight?, is_flush?)}.last
+    strength_digits RULES.find{|r| r.first.call(stats.freq_count, stats.max_freq, is_straight?, is_flush?)}.last
   end
   
   def strength

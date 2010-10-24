@@ -22,11 +22,7 @@ describe 'hand' do
     end
 end
 
-describe 'frequency stats' do
-  
-  def stats(str)
-    FrequencyStats.new str.split.map {|c| Card.new(c)}
-  end
+describe 'hand strengths' do
   
   [['creates maximum strength of 4 for high card hand',      '2H 4C 6S 8D TH', 4],
    ['creates maximum strength of 5 for pair hand',           '2A 2B 5C 7D AE', 5],
