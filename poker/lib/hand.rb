@@ -44,7 +44,7 @@ class FrequencyStats
     return strength_digits(7)  if @freqs.count == 3 && max_freq == 3 #3 of a kind
     #straight
     #flush
-    #full house
+    return strength_digits(10)  if @freqs.count == 2 && max_freq == 3 #full house
     return strength_digits(11)  if @freqs.count == 2 && max_freq == 4 #4 of a kind
     #straight flush (royal is covered)
   end
