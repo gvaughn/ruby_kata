@@ -36,6 +36,7 @@ describe 'frequency stats' do
    ['creates maximum strength of 9 for flush hand',          '4H 5H 6H TH 8H', 9],
    ['creates maximum strength of 10 for full house hand',    '4H 4C 4D 3S 3C', 10],
    ['creates maximum strength of 11 for 4 of a kind hand',    '4H 4C 4D 4S JC', 11],
+   ['creates maximum strength of 12 for straight flush hand', 'TH 9H 8H 7H 6H', 12],
   ].each do |desc, cards, expected|
     it desc do
       stats(cards).strength.max.exponent.should be expected
