@@ -14,6 +14,7 @@ describe 'hand' do
    ["A high beats K high",                  "AA 2B 4C 6D 8E",   "KA 2B 4C 6D 8E"],
    ["pairs use kicker for tie",             "8H 8S AC 2S 3D",   "8C 8D KD 9S 2C"],
    ["two pair 2s and 3s beats pair of As",  "2H 2S 3C 3S 4D",   "AC AD JD TS QC"],
+   ["full house beats 3 of a kind",         "2H 2S 3C 3S 3D",   "AC AD AD TS QC"],
     ].each do |desc, winner, loser|
       it desc do
         Hand.new(winner).should > Hand.new(loser)
