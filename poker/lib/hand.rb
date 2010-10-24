@@ -30,6 +30,10 @@ class FrequencyStats
     end
   end
   
+  def freq_count
+    @freqs.count
+  end
+  
   def max_freq
     @max_freq ||= @freqs.collect {|c, f| f}.max
   end
@@ -46,22 +50,23 @@ class FrequencyStats
     @freqs.value_by_desc_freq.map.with_index {|c,n| StrengthDigit.new c, max_exponent - n}
   end
   
-  def strength
-    return strength_digits(4)  if @freqs.count == 5 && !is_straight && !is_flush #high card
-    return strength_digits(5)  if @freqs.count == 4 #pair
-    return strength_digits(6)  if @freqs.count == 3 && max_freq == 2 #2 pair
-    return strength_digits(7)  if @freqs.count == 3 && max_freq == 3 #3 of a kind
-    return strength_digits(8)  if @freqs.count == 5 && is_straight && !is_flush #straight
-    return strength_digits(9)  if @freqs.count == 5 && is_flush && !is_straight #flush
-    return strength_digits(10)  if @freqs.count == 2 && max_freq == 3 #full house
-    return strength_digits(11)  if @freqs.count == 2 && max_freq == 4 #4 of a kind
-    return strength_digits(12)  if @freqs.count == 5 && is_straight && is_flush #straight flush (royal is covered)
-  end
-  
 end
 
 class Hand
   include Comparable
+  
+  MAX_EXPONENT = 12
+  RULES = [
+    [Proc.new {|fcount, fmax, straight, flush| straight && flush}, 12], # straight flush
+    [Proc.new {|fcount, fmax, straight, flush| fcount == 2 && fmax == 4}, 11], # 4 of a kind
+    [Proc.new {|fcount, fmax, straight, flush| fcount == 2 && fmax == 3}, 10], # full house
+    [Proc.new {|fcount, fmax, straight, flush| flush}, 9], # flush
+    [Proc.new {|fcount, fmax, straight, flush| straight}, 8], # straight
+    [Proc.new {|fcount, fmax, straight, flush| fcount == 3 && fmax == 3}, 7], # 3 of a kind
+    [Proc.new {|fcount, fmax, straight, flush| fcount == 3 && fmax == 2}, 6], # 2 pair
+    [Proc.new {|fcount, fmax, straight, flush| fcount == 4}, 5], # pair
+    [Proc.new {|fcount, fmax, straight, flush| fcount == 5}, 4], # high card
+  ]
   
   attr_accessor :stats
   def initialize(val)
@@ -77,10 +82,14 @@ class Hand
     strength <=> other.strength
   end
   
-  def strength
-    @stats.strength.reduce(0) {|sum, s| sum + s.strength}
+  def strengths
+    stats.strength_digits RULES.find{|r| r.first.call(stats.freq_count, stats.max_freq, stats.is_straight, stats.is_flush)}.last
   end
-
+  
+  def strength
+    strengths.reduce(0) {|sum, d| sum + d.strength}
+  end
+  
   def to_s
     "#{@cards.join ' '} str: #{@stats.strength.join ','}"
   end
