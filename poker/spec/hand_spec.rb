@@ -35,7 +35,7 @@ describe 'hand strengths' do
    ['creates maximum strength of 12 for straight flush hand', 'TH 9H 8H 7H 6H', 12],
   ].each do |desc, cards, expected|
     it desc do
-      Hand.new(cards).strengths.max.exponent.should be expected
+      Hand.new(cards).strengths.first.last.should be expected
     end
   end
   

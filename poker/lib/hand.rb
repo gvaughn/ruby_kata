@@ -1,26 +1,3 @@
-class StrengthDigit
-  include Comparable
-  
-  BASE = 15
-  attr_reader :multiplier, :exponent
-  
-  def initialize(m, e)
-    @multiplier, @exponent = m, e
-  end
-  
-  def strength
-    multiplier * BASE**exponent
-  end
-  
-  def <=>(other)
-    [exponent, multiplier] <=> [other.exponent, other,multiplier]
-  end
-  
-  def to_s
-    "#{multiplier} ^ #{exponent}"
-  end
-end
-
 class Hand
   include Comparable
   
@@ -81,11 +58,11 @@ class Hand
   
   def strengths
     max_exponent = RULES.find{|r| r.first.call(stats.count, stats.max, is_straight?, is_flush?)}.last
-    stats.desc_face_map_with_index {|card_value, index| StrengthDigit.new card_value, max_exponent - index}
+    stats.desc_face_map_with_index {|card_value, index| [card_value, max_exponent - index]}
   end
   
   def strength
-    strengths.reduce(0) {|sum, d| sum + d.strength}
+    strengths.reduce(0) {|sum, d| sum + d.first * 15 ** d.last}
   end
   
   def to_s
