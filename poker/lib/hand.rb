@@ -38,23 +38,29 @@ class Hand
   
   attr_accessor :stats
   
-  def initialize(val)
-    @cards = val.split.map {|c| Card.new(c)}.sort
-    @stats = create_stats @cards
+  def initialize(str)
+    create_cards str
+    create_stats
   end
   
-  def create_stats(cards)
-    freqs = cards.reduce(Hash.new(0)) {|m, c| m[c.face_value] += 1; m}
+  def create_stats
+    @stats = @cards.reduce(Hash.new(0)) {|m, c| m[c.face_value] += 1; m}
     
-    def freqs.desc_face_map_with_index &block
+    def @stats.desc_face_map_with_index &block
       self.sort{|a,b| b.reverse <=> a.reverse}.map{|c,f| c}.map.with_index &block
     end
     
-    def freqs.max
+    def @stats.max
       self.map {|c, f| f}.max
     end
+  end
+  
+  def create_cards(str)
+    @cards = str.split.map {|c| Card.new(c)}.sort
     
-    freqs
+    def @cards.match_each_pair
+      self.each_cons(2).map{|a,b| yield a,b}.all?
+    end
   end
   
   def count
@@ -62,11 +68,11 @@ class Hand
   end
   
   def is_straight?
-    @is_straight ||= @cards.each_cons(2).map{|a,b| b.face_value - a.face_value == 1}.all?
+    @cards.match_each_pair{|a,b| b.face_value - a.face_value == 1}
   end
   
   def is_flush?
-    @is_flush ||= @cards.each_cons(2).map{|a,b| a.suit == b.suit}.all?
+    @cards.match_each_pair{|a,b| a.suit == b.suit}
   end
   
   def <=>(other)
