@@ -21,8 +21,8 @@ class Hand
   def create_cards(str)
     @cards = str.split.map {|c| Card.new(c)}.sort
     
-    def @cards.match_each_pair
-      self.each_cons(2).map{|a,b| yield a,b}.all?
+    def @cards.match_each_pair &block
+      self.each_cons(2).all? &block
     end
   end
   
