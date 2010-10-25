@@ -54,14 +54,10 @@ class Hand
     strength <=> other.strength
   end
   
-  def strengths
+  def strength
     inputs = [@stats.count, @stats.max, is_straight?, is_flush?]
     max_exponent = RULES.find{|r| r.first.call inputs}.last
-    @stats.desc_face_map_with_index {|card_value, index| [card_value, max_exponent - index]}
-  end
-  
-  def strength
-    strengths.reduce(0) {|sum, d| sum + d.first * 15 ** d.last}
+    @stats.desc_face_map_with_index {|card_value, index| [max_exponent - index, card_value]}
   end
   
   def to_s
