@@ -1,6 +1,16 @@
+class Array
+  alias :face_value :first
+  alias :frequency :last
+  alias :suit :last
+end
+
 class Hand
   include Comparable
   
+  FACE_CARDS = {'A' => 14, 'K' => 13, 'Q' => 12, 'J' => 11, 'T' => 10}
+  FACE_MAP = Hash.new {|h,k| k.to_i}
+  FACE_MAP.merge! FACE_CARDS
+
   RULES = [
     [Proc.new {|fcount, fmax, straight, flush| straight && flush},        12], # straight flush (and royal flush)
     [Proc.new {|fcount, fmax, straight, flush| fcount == 2 && fmax == 4}, 11], # 4 of a kind
@@ -19,7 +29,7 @@ class Hand
   end
   
   def create_cards(str)
-    @cards = str.split.map {|c| Card.new(c)}.sort
+    @cards = str.split.map {|val| [FACE_MAP[val[0,1]], val[-1,1]]}.sort.reverse
     
     def @cards.match_each_pair &block
       self.each_cons(2).all? &block
@@ -43,7 +53,7 @@ class Hand
   end
   
   def is_straight?
-    @cards.match_each_pair{|a,b| b.face_value - a.face_value == 1}
+    @cards.match_each_pair{|a,b| a.face_value - b.face_value == 1}
   end
   
   def is_flush?
@@ -61,6 +71,6 @@ class Hand
   end
   
   def to_s
-    "#{@cards.join ' '} str: #{strengths.join ','}"
+    "#{@cards.join ' '} str: #{strength.join ','}"
   end
 end

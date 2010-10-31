@@ -1,4 +1,3 @@
-require File.dirname(__FILE__) + '/../lib/card.rb'
 require File.dirname(__FILE__) + '/../lib/hand.rb'
 
 describe 'hand' do
