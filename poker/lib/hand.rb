@@ -2,6 +2,7 @@ class Array
   alias :face_value :first
   alias :frequency :last
   alias :suit :last
+  alias :rank :last
 end
 
 class Hand
@@ -40,11 +41,7 @@ class Hand
     @stats = @cards.reduce(Hash.new(0)) {|m, c| m[c.face_value] += 1; m}
     
     def @stats.desc_face_map_with_index &block
-      self.sort{|a,b| b.reverse <=> a.reverse}.map{|c,f| c}.map.with_index &block
-    end
-    
-    def @stats.max
-      self.map {|c, f| f}.max
+      self.sort{|a,b| b.reverse <=> a.reverse}.map(&:face_value).map.with_index &block
     end
   end
   
@@ -65,9 +62,9 @@ class Hand
   end
   
   def strength
-    inputs = [@stats.count, @stats.max, is_straight?, is_flush?]
-    max_exponent = RULES.find{|r| r.first.call inputs}.last
-    @stats.desc_face_map_with_index {|card_value, index| [max_exponent - index, card_value]}
+    inputs = [@stats.count, @stats.map(&:frequency).max, is_straight?, is_flush?]
+    power = RULES.find{|r| r.first.call inputs}.rank
+    @stats.desc_face_map_with_index {|card_value, index| [power - index, card_value]}
   end
   
   def to_s
