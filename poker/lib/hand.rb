@@ -24,19 +24,7 @@ class Hand
   ]
   
   def initialize(str)
-    create_cards str
-    create_stats
-  end
-  
-  def create_cards(str)
     @cards = str.split.map {|val| [FACE_MAP[val[0,1]], val[-1,1]]}.sort.reverse
-    
-    def @cards.pairwise? &block
-      each_cons(2).all? &block
-    end
-  end
-  
-  def create_stats
     @stats = @cards.reduce(Hash.new(0)) {|m, c| m[c.face_value] += 1; m}
     
     def @stats.desc_face_values
@@ -52,8 +40,8 @@ class Hand
     characteristics = [
       @stats.count, 
       @stats.map(&:frequency).max, 
-      @cards.pairwise?{|a,b| a.face_value - b.face_value == 1}, 
-      @cards.pairwise?{|a,b| a.suit == b.suit}
+      @cards.each_cons(2).all?{|a,b| a.face_value - b.face_value == 1}, 
+      @cards.each_cons(2).all?{|a,b| a.suit == b.suit}
     ]
     RULES.find{|r| r.first.call(characteristics)}.last
   end
