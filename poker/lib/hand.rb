@@ -40,8 +40,8 @@ class Hand
   def create_stats
     @stats = @cards.reduce(Hash.new(0)) {|m, c| m[c.face_value] += 1; m}
     
-    def @stats.desc_face_map_with_index &block
-      self.sort{|a,b| b.reverse <=> a.reverse}.map(&:face_value).map.with_index &block
+    def @stats.desc_face_values
+      self.sort{|a,b| b.reverse <=> a.reverse}.map(&:face_value)
     end
   end
   
@@ -63,9 +63,7 @@ class Hand
   
   def strength
     inputs = [@stats.count, @stats.map(&:frequency).max, is_straight?, is_flush?]
-    power = RULES.find{|r| r.first.call inputs}.rank
-#    @stats.desc_face_map_with_index {|card_value, index| [power - index, card_value]}
-    [power] << @stats.desc_face_map_with_index {|card_value, index| card_value}
+    [RULES.find{|r| r.first.call inputs}.rank] << @stats.desc_face_values
   end
   
   def to_s
