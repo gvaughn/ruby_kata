@@ -23,10 +23,6 @@ end
 
 describe 'hand strengths' do
   
-  def high_exponent(cards)
-    Hand.new(cards).strength.first
-  end
-  
   [['creates maximum strength of 4 for high card hand',      '2H 4C 6S 8D TH', 4],
    ['creates maximum strength of 5 for pair hand',           '2A 2B 5C 7D AE', 5],
    ['creates maximum strength of 6 for 2 pair hand',         "2H 2S 3C 3S 4D", 6],
@@ -38,7 +34,7 @@ describe 'hand strengths' do
    ['creates maximum strength of 12 for straight flush hand', 'TH 9H 8H 7H 6H', 12],
   ].each do |desc, cards, expected|
     it desc do
-      high_exponent(cards).should be expected
+      Hand.new(cards).strength.first.should be expected
     end
   end
   
