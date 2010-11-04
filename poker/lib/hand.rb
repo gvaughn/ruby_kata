@@ -31,7 +31,7 @@ class Hand
   def create_cards(str)
     @cards = str.split.map {|val| [FACE_MAP[val[0,1]], val[-1,1]]}.sort.reverse
     
-    def @cards.match_each_pair &block
+    def @cards.pairwise? &block
       each_cons(2).all? &block
     end
   end
@@ -49,16 +49,13 @@ class Hand
   end
   
   def rank
-    inputs = [@stats.count, @stats.map(&:frequency).max, is_straight?, is_flush?]
-    RULES.find{|r| r.first.call inputs}.last
-  end
-  
-  def is_straight?
-    @cards.match_each_pair{|a,b| a.face_value - b.face_value == 1}
-  end
-  
-  def is_flush?
-    @cards.match_each_pair{|a,b| a.suit == b.suit}
+    characteristics = [
+      @stats.count, 
+      @stats.map(&:frequency).max, 
+      @cards.pairwise?{|a,b| a.face_value - b.face_value == 1}, 
+      @cards.pairwise?{|a,b| a.suit == b.suit}
+    ]
+    RULES.find{|r| r.first.call(characteristics)}.last
   end
   
   def <=>(other)
