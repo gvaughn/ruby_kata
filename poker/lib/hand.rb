@@ -26,10 +26,6 @@ class Hand
   def initialize(str)
     @cards = str.split.map {|val| [FACE_MAP[val[0,1]], val[-1,1]]}.sort.reverse
     @stats = @cards.reduce(Hash.new(0)) {|m, c| m[c.face_value] += 1; m}
-    
-    def @stats.desc_face_values
-      sort{|a,b| b.reverse <=> a.reverse}.map(&:face_value)
-    end
   end
   
   def count
@@ -51,7 +47,7 @@ class Hand
   end
   
   def strength
-    [rank] << @stats.desc_face_values
+    [rank] << @stats.sort{|a,b| b.reverse <=> a.reverse}.map(&:face_value)
   end
   
   def to_s
