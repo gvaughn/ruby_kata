@@ -25,7 +25,8 @@ class Hand
   
   def initialize(str)
     @cards = str.split.map {|val| [FACE_MAP[val[0,1]], val[-1,1]]}.sort.reverse
-    @stats = @cards.reduce(Hash.new(0)) {|m, c| m[c.face_value] += 1; m}
+    @fcards = @cards.reduce(Hash.new(0)) {|h, c| h[c.face_value] += 1; h}
+    @fsuits = @cards.reduce(Hash.new(0)) {|h, c| h[c.suit] += 1; h}
   end
   
   def count
@@ -33,15 +34,15 @@ class Hand
   end
   
   def power_cards
-    @stats.sort{|a,b| b.reverse <=> a.reverse}.map(&:face_value)
+    @fcards.sort{|a,b| b.reverse <=> a.reverse}.map(&:face_value)
   end
   
   def rank
     characteristics = [
-      @stats.count, 
-      @stats.map(&:frequency).max, 
+      @fcards.count, 
+      @fcards.map(&:frequency).max, 
       @cards.each_cons(2).all?{|a,b| a.face_value - b.face_value == 1}, 
-      @cards.each_cons(2).all?{|a,b| a.suit == b.suit}
+      @fsuits.count == 1
     ]
     RULES.find{|r| r.first.call(characteristics)}.last
   end
