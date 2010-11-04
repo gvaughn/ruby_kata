@@ -12,15 +12,15 @@ class Hand
   FACE_MAP.merge! FACE_CARDS
 
   RULES = [
-    [proc {|fcount, fmax, straight, flush| straight && flush},        12], # straight flush (and royal flush)
-    [proc {|fcount, fmax, straight, flush| fcount == 2 && fmax == 4}, 11], # 4 of a kind
-    [proc {|fcount, fmax, straight, flush| fcount == 2 && fmax == 3}, 10], # full house
-    [proc {|fcount, fmax, straight, flush| flush},                     9], # flush
-    [proc {|fcount, fmax, straight, flush| straight},                  8], # straight
-    [proc {|fcount, fmax, straight, flush| fcount == 3 && fmax == 3},  7], # 3 of a kind
-    [proc {|fcount, fmax, straight, flush| fcount == 3 && fmax == 2},  6], # 2 pair
-    [proc {|fcount, fmax, straight, flush| fcount == 4},               5], # pair
-    [proc {|fcount, fmax, straight, flush| fcount == 5},               4], # high card
+    [proc {|fcount, fmax, straight, flush| straight && flush},         9], # straight flush (and royal flush)
+    [proc {|fcount, fmax, straight, flush| fcount == 2 && fmax == 4},  8], # 4 of a kind
+    [proc {|fcount, fmax, straight, flush| fcount == 2 && fmax == 3},  7], # full house
+    [proc {|fcount, fmax, straight, flush| flush},                     6], # flush
+    [proc {|fcount, fmax, straight, flush| straight},                  5], # straight
+    [proc {|fcount, fmax, straight, flush| fcount == 3 && fmax == 3},  4], # 3 of a kind
+    [proc {|fcount, fmax, straight, flush| fcount == 3 && fmax == 2},  3], # 2 pair
+    [proc {|fcount, fmax, straight, flush| fcount == 4},               2], # pair
+    [proc {|fcount, fmax, straight, flush| fcount == 5},               1], # high card
   ]
   
   def initialize(str)
