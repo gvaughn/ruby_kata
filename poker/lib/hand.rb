@@ -27,6 +27,7 @@ class Hand
     @cards = str.split.map {|val| [FACE_MAP[val[0,1]], val[-1,1]]}.sort.reverse
     @fcards = @cards.reduce(Hash.new(0)) {|h, c| h[c.face_value] += 1; h}
     @fsuits = @cards.reduce(Hash.new(0)) {|h, c| h[c.suit] += 1; h}
+    @gaps = @cards.each_cons(2).map {|a, b| a.face_value - b.face_value}
   end
   
   def count
@@ -41,7 +42,7 @@ class Hand
     characteristics = [
       @fcards.count, 
       @fcards.map(&:frequency).max, 
-      @cards.each_cons(2).all?{|a,b| a.face_value - b.face_value == 1}, 
+      @gaps.all? {|g| g == 1},
       @fsuits.count == 1
     ]
     RULES.find{|r| r.first.call(characteristics)}.last
