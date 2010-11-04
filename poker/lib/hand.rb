@@ -32,6 +32,10 @@ class Hand
     @cards.count
   end
   
+  def power_cards
+    @stats.sort{|a,b| b.reverse <=> a.reverse}.map(&:face_value)
+  end
+  
   def rank
     characteristics = [
       @stats.count, 
@@ -43,11 +47,7 @@ class Hand
   end
   
   def <=>(other)
-    strength <=> other.strength
-  end
-  
-  def strength
-    [rank] << @stats.sort{|a,b| b.reverse <=> a.reverse}.map(&:face_value)
+    ( [rank] << power_cards) <=> ( [other.rank] << other.power_cards)
   end
   
   def to_s
