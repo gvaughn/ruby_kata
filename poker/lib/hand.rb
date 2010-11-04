@@ -64,7 +64,8 @@ class Hand
   def strength
     inputs = [@stats.count, @stats.map(&:frequency).max, is_straight?, is_flush?]
     power = RULES.find{|r| r.first.call inputs}.rank
-    @stats.desc_face_map_with_index {|card_value, index| [power - index, card_value]}
+#    @stats.desc_face_map_with_index {|card_value, index| [power - index, card_value]}
+    [power] << @stats.desc_face_map_with_index {|card_value, index| card_value}
   end
   
   def to_s

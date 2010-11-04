@@ -24,7 +24,7 @@ end
 describe 'hand strengths' do
   
   def high_exponent(cards)
-    Hand.new(cards).strength.first.first
+    Hand.new(cards).strength.first
   end
   
   [['creates maximum strength of 4 for high card hand',      '2H 4C 6S 8D TH', 4],
