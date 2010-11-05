@@ -3,7 +3,6 @@ class Hand
   
   class ::Array
     alias :face_value :first
-    alias :frequency :last
     alias :suit :last
   end
 
@@ -32,6 +31,21 @@ class Hand
     
     def power_cards
       @fcards.map(&:face_value)
+    end
+  end
+  
+  class Type
+    attr_reader :name, :rank
+    def initialize(name, rank, &matcher)
+      @name, @rank, @matcher = name, rank, matcher
+    end
+    
+    def match(chx)
+      @matcher[chx]
+    end
+    
+    def power_cards(chx)
+      @chx.power_cards
     end
   end
   
