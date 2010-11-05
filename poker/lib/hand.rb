@@ -25,7 +25,7 @@ class Hand
   
   def initialize(str)
     @cards = str.split.map {|val| [FACE_MAP[val[0,1]], val[-1,1]]}.sort.reverse
-    @fcards = @cards.reduce(Hash.new(0)) {|h, c| h[c.face_value] += 1; h}
+    @fcards = @cards.reduce(Hash.new(0)) {|h, c| h[c.face_value] += 1; h}.sort{|a,b| b.reverse <=> a.reverse}
     @fsuits = @cards.reduce(Hash.new(0)) {|h, c| h[c.suit] += 1; h}
     @gaps = @cards.each_cons(2).map {|a, b| a.face_value - b.face_value}
   end
@@ -35,7 +35,7 @@ class Hand
   end
   
   def power_cards
-    @fcards.sort{|a,b| b.reverse <=> a.reverse}.map(&:face_value)
+    @fcards.map(&:face_value)
   end
   
   def rank
