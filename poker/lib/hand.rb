@@ -29,6 +29,10 @@ class Hand
     def flush?
       @fsuits.count == 1
     end
+    
+    def power_cards
+      @fcards.map(&:face_value)
+    end
   end
   
   FACE_CARDS = {'A' => 14, 'K' => 13, 'Q' => 12, 'J' => 11, 'T' => 10}
@@ -49,19 +53,19 @@ class Hand
   
   def initialize(str)
     @cards = str.split.map {|val| [FACE_MAP[val[0,1]], val[-1,1]]}.sort.reverse
-    @fcards = @cards.reduce(Hash.new(0)) {|h, c| h[c.face_value] += 1; h}.sort{|a,b| b.reverse <=> a.reverse}
+    @chx = Characteristics.new(@cards)
   end
   
   def count
     @cards.count
   end
   
-  def power_cards
-    @fcards.map(&:face_value)
+  def power_cards #smelly, refactor later
+    @chx.power_cards
   end
   
   def rank
-    RULES.find{|r| r.first.call(Characteristics.new(@cards))}.last
+    RULES.find{|r| r.first[@chx]}.last
   end
   
   def <=>(other)
