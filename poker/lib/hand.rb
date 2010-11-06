@@ -29,12 +29,13 @@ class Hand
       @fsuits.count == 1
     end
     
-    def power_cards
+    def tie_breakers
       @fcards.map(&:face_value)
     end
   end
   
   class Type
+    include Comparable
     attr_reader :name, :rank
     def initialize(name, rank, &matcher)
       @name, @rank, @matcher = name, rank, matcher
@@ -44,8 +45,8 @@ class Hand
       @matcher[chx]
     end
     
-    def power_cards(chx)
-      @chx.power_cards
+    def <=>(other)
+      rank <=> other.rank
     end
   end
   
@@ -74,16 +75,16 @@ class Hand
     @cards.count
   end
   
-  def power_cards #smelly, refactor later
-    @chx.power_cards
+  def tie_breakers
+    @chx.tie_breakers
   end
   
-  def rank
-    RULES.find{|r| r.match(@chx)}.rank
+  def type
+    RULES.find{|r| r.match(@chx)}
   end
   
   def <=>(other)
-    ( [rank] << power_cards) <=> ( [other.rank] << other.power_cards)
+    ( [type] << tie_breakers) <=> ( [other.type] << other.tie_breakers)
   end
   
   def to_s
