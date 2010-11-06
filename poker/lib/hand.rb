@@ -54,15 +54,15 @@ class Hand
   FACE_MAP.merge! FACE_CARDS
 
   RULES = [
-    [proc {|c| c.straight? && c.flush?},             9], # straight flush (and royal flush)
-    [proc {|c| c.num_freq == 2 && c.max_freq == 4},  8], # 4 of a kind
-    [proc {|c| c.num_freq == 2 && c.max_freq == 3},  7], # full house
-    [proc {|c| c.flush?},                            6], # flush
-    [proc {|c| c.straight?},                         5], # straight
-    [proc {|c| c.num_freq == 3 && c.max_freq == 3},  4], # 3 of a kind
-    [proc {|c| c.num_freq == 3 && c.max_freq == 2},  3], # 2 pair
-    [proc {|c| c.num_freq == 4},                     2], # pair
-    [proc {|c| c.num_freq == 5},                     1], # high card
+    Type.new('straight flush', 9) {|c| c.straight? && c.flush?},
+    Type.new('quads', 8)          {|c| c.num_freq == 2 && c.max_freq == 4},
+    Type.new('full house', 7)     {|c| c.num_freq == 2 && c.max_freq == 3},
+    Type.new('flush', 6)          {|c| c.flush?},
+    Type.new('straight', 5)       {|c| c.straight?},
+    Type.new('trips', 4)          {|c| c.num_freq == 3 && c.max_freq == 3}, 
+    Type.new('2 pair', 3)         {|c| c.num_freq == 3 && c.max_freq == 2},
+    Type.new('pair', 2)           {|c| c.num_freq == 4},
+    Type.new('high card', 1)      {|c| c.num_freq == 5},
   ]
   
   def initialize(str)
@@ -79,7 +79,7 @@ class Hand
   end
   
   def rank
-    RULES.find{|r| r.first[@chx]}.last
+    RULES.find{|r| r.match(@chx)}.rank
   end
   
   def <=>(other)
