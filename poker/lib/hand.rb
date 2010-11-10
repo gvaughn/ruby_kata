@@ -80,7 +80,7 @@ class Hand
   end
   
   def type
-    RULES.find{|r| r.match(@chx)}
+    @type ||= RULES.find{|r| r.match(@chx)}
   end
   
   def <=>(other)
@@ -88,6 +88,6 @@ class Hand
   end
   
   def to_s
-    "#{@cards.join ' '} str: #{strength.join ','}"
+    "#{@cards.join ' '} #{type.name}"
   end
 end
