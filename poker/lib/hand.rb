@@ -8,15 +8,21 @@ class Card
   attr_reader :face_value, :suit
   
   def initialize(face, suit)
-    @face_value, @suit = face, suit
+    @face_str = face
+    @face_value = FACE_MAP[face]
+    @suit = suit
   end
   
   def <=>(other)
     face_value <=> other.face_value
   end
   
+  def to_s
+    "#{@face_str}#{suit}"
+  end
+  
   def self.from_s(str)
-    str.split.map {|val| new(FACE_MAP[val[0,1]], val[-1,1])}.sort.reverse
+    str.split.map {|val| new(val[0,1], val[-1,1])}.sort.reverse
   end
 end
 
@@ -107,6 +113,6 @@ class Hand
   end
   
   def to_s
-    "#{@cards.join ' '} #{type.name}"
+    "#{type.name}: #{@cards.join ' '}"
   end
 end
