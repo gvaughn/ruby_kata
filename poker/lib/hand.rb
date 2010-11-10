@@ -1,6 +1,23 @@
-class Array
-  alias :face_value :first
-  alias :suit :last
+class Card
+  include Comparable
+  
+  FACE_CARDS = {'A' => 14, 'K' => 13, 'Q' => 12, 'J' => 11, 'T' => 10}
+  FACE_MAP = Hash.new {|h,k| k.to_i}
+  FACE_MAP.merge! FACE_CARDS
+
+  attr_reader :face_value, :suit
+  
+  def initialize(face, suit)
+    @face_value, @suit = face, suit
+  end
+  
+  def <=>(other)
+    face_value <=> other.face_value
+  end
+  
+  def self.from_s(str)
+    str.split.map {|val| new(FACE_MAP[val[0,1]], val[-1,1])}.sort.reverse
+  end
 end
 
 class Type
@@ -61,19 +78,15 @@ class Characteristics
   end
   
   def tie_breakers
-    @fcards.map(&:face_value)
+    @fcards.map(&:first) #it's the face_value
   end
 end
 
 class Hand
   include Comparable
   
-  FACE_CARDS = {'A' => 14, 'K' => 13, 'Q' => 12, 'J' => 11, 'T' => 10}
-  FACE_MAP = Hash.new {|h,k| k.to_i}
-  FACE_MAP.merge! FACE_CARDS
-
   def initialize(str)
-    @cards = str.split.map {|val| [FACE_MAP[val[0,1]], val[-1,1]]}.sort.reverse
+    @cards = Card.from_s(str)
     @chx = Characteristics.new(@cards)
   end
   
