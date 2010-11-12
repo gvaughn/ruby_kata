@@ -13,16 +13,16 @@ class Card
     @suit = suit
   end
   
+  def gap(other)
+    face_value - other.face_value
+  end
+  
   def <=>(other)
     face_value <=> other.face_value
   end
   
   def to_s
     "#{@face_str}#{suit}"
-  end
-  
-  def self.from_s(str)
-    str.split.map {|val| new(val[0,1], val[-1,1])}.sort.reverse
   end
 end
 
@@ -64,7 +64,7 @@ class Characteristics
   def initialize(cards)
     @fcards = cards.reduce(Hash.new(0)) {|h, c| h[c.face_value] += 1; h}.sort{|a,b| b.reverse <=> a.reverse}
     @fsuits = cards.reduce(Hash.new(0)) {|h, c| h[c.suit] += 1; h}
-    @gaps = cards.each_cons(2).map {|a, b| a.face_value - b.face_value}
+    @gaps = cards.each_cons(2).map {|a, b| a.gap(b)}
   end
   
   def num_freq
@@ -76,6 +76,10 @@ class Characteristics
   end
   
   def straight?
+    if @gaps == [9,1,1,1] # ace-low straight
+      #setup proper tiebreakers
+      return true
+    end
     @gaps.all? {|g| g == 1}
   end
   
@@ -92,7 +96,7 @@ class Hand
   include Comparable
   
   def initialize(str)
-    @cards = Card.from_s(str)
+    @cards = str.split.map {|val| Card.new(val[0,1], val[-1,1])}.sort.reverse
     @chx = Characteristics.new(@cards)
   end
   

@@ -26,6 +26,10 @@ describe 'hand' do
         Hand.new(cards).type.rank.should be expected
       end
     end
+    
+    it 'recognizes Ace-low straight' do
+      Hand.new('AH 2C 3D 4H 5S').type.rank.should == 5
+    end
   end
 
   describe 'comparisons' do
