@@ -35,16 +35,16 @@ class Type
     @name, @rank, @matcher = name, rank, matcher
   end
   
-  def match(chx)
-    @matcher[chx]
+  def match(hand)
+    @matcher[hand]
   end
   
   def <=>(other)
     rank <=> other.rank
   end
   
-  def self.for(chx)
-    RULES.find{|r| r.match(chx)}
+  def self.for(hand)
+    RULES.find{|r| r.match(hand)}
   end
 
   RULES = [
@@ -60,11 +60,26 @@ class Type
   ]
 end
 
-class Characteristics
-  def initialize(cards)
-    @fcards = cards.reduce(Hash.new(0)) {|h, c| h[c.face_value] += 1; h}.sort{|a,b| b.reverse <=> a.reverse}
-    @fsuits = cards.reduce(Hash.new(0)) {|h, c| h[c.suit] += 1; h}
-    @gaps = cards.each_cons(2).map {|a, b| a.gap(b)}
+class Hand
+  include Comparable
+  
+  def initialize(str)
+    @cards = str.split.map {|val| Card.new(val[0,1], val[-1,1])}.sort.reverse
+    @fcards = @cards.reduce(Hash.new(0)) {|h, c| h[c.face_value] += 1; h}.sort{|a,b| b.reverse <=> a.reverse}
+    @fsuits = @cards.reduce(Hash.new(0)) {|h, c| h[c.suit] += 1; h}
+    @gaps = @cards.each_cons(2).map {|a, b| a.gap(b)}
+  end
+  
+  def count
+    @cards.count
+  end
+  
+  def type
+    @type ||= Type.for(self)
+  end
+  
+  def <=>(other)
+    ( [type] << tie_breakers) <=> ( [other.type] << other.tie_breakers)
   end
   
   def num_freq
@@ -90,32 +105,7 @@ class Characteristics
   def tie_breakers
     @fcards.map(&:first) #it's the face_value
   end
-end
 
-class Hand
-  include Comparable
-  
-  def initialize(str)
-    @cards = str.split.map {|val| Card.new(val[0,1], val[-1,1])}.sort.reverse
-    @chx = Characteristics.new(@cards)
-  end
-  
-  def count
-    @cards.count
-  end
-  
-  def tie_breakers
-    @chx.tie_breakers
-  end
-  
-  def type
-    @type ||= Type.for(@chx)
-  end
-  
-  def <=>(other)
-    ( [type] << tie_breakers) <=> ( [other.type] << other.tie_breakers)
-  end
-  
   def to_s
     "#{type.name}: #{@cards.join ' '}"
   end
