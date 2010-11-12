@@ -77,7 +77,7 @@ class Characteristics
   
   def straight?
     if @gaps == [9,1,1,1] # ace-low straight
-      #setup proper tiebreakers
+      @fcards.shift #get rid of ace-high tiebreaker
       return true
     end
     @gaps.all? {|g| g == 1}

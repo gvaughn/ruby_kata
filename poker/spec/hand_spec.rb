@@ -40,6 +40,10 @@ describe 'hand' do
         end
       end
     end
+    
+    it 'ace low straight loses to other straight' do
+      Hand.new('4H 5C 6D 7S 8C').should > Hand.new('AH 2C 3D 4H 5S')
+    end
 
     describe 'with tiebreakers' do
       [["pair of 3s beat a pair of 2s",  '3A 3B 5C 7D 9E',   '2A 2B 5C 7D AE'],
