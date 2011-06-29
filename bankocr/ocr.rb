@@ -1,3 +1,5 @@
+# http://codingdojo.org/cgi-bin/wiki.pl?KataBankOCR
+
 module BankOCR
   MAPPINGS = {
     /^ _/ => 0,
@@ -29,3 +31,4 @@ describe 'OCR' do
     end
   end
 end
+
