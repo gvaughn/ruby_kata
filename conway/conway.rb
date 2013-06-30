@@ -4,14 +4,24 @@ def evolve(generation)
 end
 
 def generation_stats(live_cells)
-  live_cells.each_with_object(Hash.new {|h,k| h[k] = 0}) {|live_cell, counter|
-    neighbors(*live_cell).each {|neighbor| counter[neighbor] += 1 }
-  }.each_with_object(Hash.new {|h,k| h[k] = []}) {|(cell, count), collector| collector[count] << cell}
+  live_cells.each_with_object(Hash.new(0),                &method(:cell_neighbor_counts)).
+             each_with_object(Hash.new {|h,k| h[k] = []}, &method(:neighbor_count_cells))
+end
+
+def cell_neighbor_counts(live_cell, accumulator)
+  neighbors(*live_cell).each {|neighbor| accumulator[neighbor] += 1 }
+end
+
+def neighbor_count_cells((cell, count), collector)
+  collector[count] << cell
 end
 
 def neighbors(x, y)
   [x-1, x, x+1].product([y-1, y, y+1]) - [[x, y]]
 end
+
+#NOTE: a parallel Elixir version can be found
+# https://github.com/gvaughn/elixir_kata/blob/master/conway/lib/conway.ex
 
 describe "Conway's Game of Life" do
  it "handles static block object" do
