@@ -1,7 +1,6 @@
 #! /usr/bin/env ruby
 
 require './lib/hand.rb'
-require './lib/card.rb'
 
 winner = File.readlines('poker.txt').collect do |line|
   Hand.new(line[0,14]) <=> Hand.new(line[15,14])
