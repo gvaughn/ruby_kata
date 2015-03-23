@@ -13,10 +13,11 @@ module TwitterTagTracker
       raise "Requires a block" unless block_given?
 
       @io.each_line do |line|
-        json_tweet = JSON.parse(line)
-        tweet_text = json_tweet.fetch('text', '')
-        tweet_text.scan(TAG_REGEX).each {|tag| yield tag.first}
-        # TODO handle json parse exceptions
+        begin
+          JSON.parse(line).fetch('text', '').scan(TAG_REGEX).each {|tag| yield tag.first}
+        rescue JSON::ParserError
+          next
+        end
       end
     end
   end
