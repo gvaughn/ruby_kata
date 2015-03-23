@@ -1,0 +1,10 @@
+#! /usr/bin/env ruby
+# This is a handy manual verification that oauth is happening with Twitter
+
+# add current directory to load path
+$LOAD_PATH.unshift File.expand_path '../', __FILE__
+require 'yaml'
+require 'twitter_tag_tracker'
+
+creds = YAML.load_file('credentials.yml')
+TwitterTagTracker.each_tag(creds) {|tag| puts tag}

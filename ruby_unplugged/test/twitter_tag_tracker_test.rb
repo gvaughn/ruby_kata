@@ -5,9 +5,8 @@ describe TwitterTagTracker do
 
   describe "tag stream" do
     it "yields tags" do
-      tag_stream = TwitterTagTracker::TagStream.new(DATA)
       tags = []
-      tag_stream.each_tag {|tag| tags << tag}
+      TwitterTagTracker.parse_for_tags(DATA) {|tag| tags << tag}
 
       tags.count.must_equal 26
       #spot check

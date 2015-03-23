@@ -1,6 +1,6 @@
 # Ruby Unplugged
 
-There's too many rockstars in the ruby world that rely on pedals and
+There's too many rockstars in the Ruby world that rely on pedals and
 effects and can't really make music the old-fashioned way -- sitting on
 the front porch with the neighbors for a nice Pat Boone sing-a-long.
 
