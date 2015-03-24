@@ -27,8 +27,6 @@ module TwitterTagTracker
     end
   end
 
-  private
-
   def self.sign_request(req, params)
     consumer = OAuth::Consumer.new(params.fetch(:consumer_key), params.fetch(:consumer_secret),
                                    { :site => "https://stream.twitter.com", :scheme => :header })
