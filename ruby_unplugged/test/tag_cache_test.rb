@@ -20,6 +20,33 @@ describe TagCache do
       top10[1].must_equal ["tag55", 2]
       top10.last.must_equal ["tag40", 1] #secondary sort by tag makes this last
     end
+
+    it "handles multiple threads" do
+      tc = TagCache.new
+      result = []
+
+      t1 = Thread.new {
+        10.times {|n| tc.put("t#{n}-from1"); sleep 0.2}
+      }
+
+      t2 = Thread.new {
+        sleep 0.1
+        12.times {|n| tc.put("t#{n}-from2"); sleep 0.15}
+      }
+
+      t3 = Thread.new {
+        sleep 1.9
+        result = tc.top10
+      }
+
+      t1.join
+      t2.join
+      t3.join
+
+      #puts result.inspect
+      # basically this is an assert_nothing_raised which minitest doesn't have (for good reasons)
+      # It's a difficult test to automate in general
+    end
   end
 end
 
