@@ -1,1 +1,1 @@
-ruby -I. test/twitter_tag_tracker_test.rb
+ruby -Itest:. test/suite.rb
