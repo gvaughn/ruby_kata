@@ -7,15 +7,18 @@ describe TagCache do
       sample_data = (0..65).step(5).map {|offset|
         [now - offset, "tag#{offset}"]
       }
-      sample_data.insert(1, [now - 2, "tag55"])
       # This extra forces the oldest tag to be counted in the top 10
       # since it's more frequent
+      sample_data.insert(1, [now - 2, "tag55"])
+
       tc = TagCache.new(sample_data)
+      3.times {tc.put("extratag")}
       top10 = tc.top10
 
       top10.count.must_equal 10
-      top10.first.must_equal ["tag55", 2]
-      top10.last.must_equal ["tag45", 1] #secondary sort by tag makes this last
+      top10.first.must_equal ["extratag", 3]
+      top10[1].must_equal ["tag55", 2]
+      top10.last.must_equal ["tag40", 1] #secondary sort by tag makes this last
     end
   end
 end

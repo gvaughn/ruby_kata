@@ -1,6 +1,5 @@
 class TagCache
-  #TODO shift new tags into @raw_array
-  # thread safety
+  #TODO thread safety
   # background thread to truncate raw_array before it gets too large
 
   def initialize(initial_array = [])
@@ -8,6 +7,10 @@ class TagCache
     # new elements must be shifted to the front so timestamp is
     # descending when moving along array
     @raw_array = initial_array
+  end
+
+  def put(tag)
+    @raw_array.unshift([Time.now.to_i, tag])
   end
 
   # returns a 10 element array consisting of 2 element pairs [tag, count]
