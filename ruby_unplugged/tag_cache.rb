@@ -13,6 +13,7 @@ class TagCache
     @semaphore.synchronize {
       @raw_array.unshift([Time.now.to_i, tag])
     }
+    tag
   end
 
   # returns a 10 element array consisting of 2 element pairs [tag, count]
