@@ -11,7 +11,7 @@ describe TagCache do
       # since it's more frequent
       sample_data.insert(1, [now - 2, "tag55"])
 
-      tc = TagCache.new(sample_data)
+      tc = TagCache.new(data: sample_data)
       3.times {tc.put("extratag")}
       top10 = tc.top10
 
@@ -22,7 +22,7 @@ describe TagCache do
     end
 
     it "handles multiple threads" do
-      tc = TagCache.new
+      tc = TagCache.new(truncate_interval: 0.1)
       result = []
 
       t1 = Thread.new {
