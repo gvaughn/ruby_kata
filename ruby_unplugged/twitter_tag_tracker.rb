@@ -5,7 +5,9 @@ module TwitterTagTracker
   TWITTER_API_URL = "https://stream.twitter.com/1.1/statuses/sample.json"
   TAG_REGEX = /\B#(\p{Word}+)/
 
-  def self.each_tag(credentials, &blk)
+  module_function
+
+  def each_tag(credentials, &blk)
     uri = URI(TWITTER_API_URL)
     Net::HTTP.start(uri.host, uri.port, use_ssl: uri.scheme == 'https') do |http|
       request = Net::HTTP::Get.new(uri)
@@ -17,7 +19,7 @@ module TwitterTagTracker
     end
   end
 
-  def self.parse_for_tags(io)
+  def parse_for_tags(io)
     io.each_line do |line|
       begin
         JSON.parse(line).fetch('text', '').scan(TAG_REGEX).each {|tag| yield tag.first}
@@ -27,7 +29,7 @@ module TwitterTagTracker
     end
   end
 
-  def self.sign_request(req, params)
+  def sign_request(req, params)
     consumer = OAuth::Consumer.new(params.fetch(:consumer_key), params.fetch(:consumer_secret),
                                    { :site => "https://stream.twitter.com", :scheme => :header })
 
