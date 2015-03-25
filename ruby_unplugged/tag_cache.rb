@@ -41,16 +41,22 @@ class TagCache
 
   def truncate_old_data
     @semaphore.synchronize {
-      @raw_array = sixty_second_snapshot
+      @raw_array = @raw_array.take_while(&timestamp_newer_than(sixty_seconds_ago))
     }
   end
 
   def sixty_second_snapshot
-    sixty_seconds_ago = Time.now.to_i - 60
-
     @semaphore.synchronize {
-      @raw_array.take_while {|(timestamp, _tag)| timestamp > sixty_seconds_ago}
+      @raw_array.take_while(&timestamp_newer_than(sixty_seconds_ago))
     }
+  end
+
+  def timestamp_newer_than(threshold)
+    proc {|(timestamp, _tag)| timestamp > threshold}
+  end
+
+  def sixty_seconds_ago
+    Time.now.to_i - 60
   end
 end
 
