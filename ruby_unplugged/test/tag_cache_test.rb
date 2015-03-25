@@ -43,9 +43,11 @@ describe TagCache do
       t2.join
       t3.join
 
-      #puts result.inspect
-      # basically this is an assert_nothing_raised which minitest doesn't have (for good reasons)
-      # It's a difficult test to automate in general
+      expected =
+        [['t0-from1', 1], ['t0-from2', 1], ['t1-from1', 1], ['t1-from2', 1], ['t10-from2', 1],
+         ['t11-from2', 1], ['t2-from1', 1], ['t2-from2', 1], ['t3-from1', 1], ['t3-from2', 1]]
+      # because of sleep intervals and alpha order, we can expect a stable result set
+      result.must_equal expected
     end
   end
 end
