@@ -26,16 +26,16 @@ describe TagCache do
       result = []
 
       t1 = Thread.new {
-        10.times {|n| tc.put("t#{n}-from1"); sleep 0.2}
+        10.times {|n| tc.put("t#{n}-from1"); sleep 0.1}
       }
 
       t2 = Thread.new {
         sleep 0.1
-        12.times {|n| tc.put("t#{n}-from2"); sleep 0.15}
+        12.times {|n| tc.put("t#{n}-from2"); sleep 0.05}
       }
 
       t3 = Thread.new {
-        sleep 1.9
+        sleep 0.9
         result = tc.top10
       }
 
