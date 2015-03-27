@@ -1,41 +1,45 @@
 require 'twitter_tag_tracker'
-#TODO don't use the suite's DATA
 
 describe TwitterTagTracker do
 
-  describe "tag stream" do
-    it "yields tags" do
-      #TODO test at the each_tag level
-      tags = []
-      ttt = TwitterTagTracker.new({})
-      ttt.parse_for_tags(DATA) {|tag| tags << tag}
-
-      tags.count.must_equal 26
-
-      #spot check
-      %w(vegan amazing HalaMadrid ابن_القيم).each do |tag|
-        tags.must_include tag
-      end
-    end
-  end
-
-  describe "oauth signing" do
-    it "adds Authorization header" do
-      req = Net::HTTP::Get.new('https://example.org/path/here')
-      credentials = {
-        consumer_key: 'my_consumer_key',
+  let(:subject) {TwitterTagTracker.new(credentials)}
+  let(:credentials) {
+      { consumer_key: 'my_consumer_key',
         consumer_secret: 'consumer_secret_will_be_crypto_signed',
         access_token: 'my_access_token',
         access_token_secret: 'acccess_token_secret_will_be_crypto_signed'
       }
+  }
+  let(:sample_stream) {File.open(File.expand_path('../sample_stream.json', __FILE__))}
 
-      ttt = TwitterTagTracker.new(credentials)
-      auth_header = ttt.sign_request(req)['Authorization']
+  it "#each_tag yields tags" do
+    tags = []
+    subject.stub(:open_stream, true, sample_stream) do
+      subject.each_tag {|tag| tags << tag}
+    end
 
-      # it's a complex header, but we can assert substrings of it
-      %w(OAuth my_consumer_key my_access_token oauth_version).each do |substring|
-        auth_header.must_include substring
-      end
+    tags.count.must_equal 26
+
+    #spot check
+    %w(bakery amazing HalaMadrid ابن_القيم).each do |tag|
+      tags.must_include tag
+    end
+  end
+
+  it "can #close" do
+    #TODO call connection.finish
+  end
+
+  it "adds oauth Authorization header" do
+    req = Net::HTTP::Get.new('https://example.org/path/here')
+    # normally I prefer not to :send, but this is tricky enough to test in isolation
+    # but I still prefer to leave the method private
+    signed_req = subject.send(:sign_request, req)
+    auth_header = signed_req['Authorization']
+
+    # it's a complex header, but we can assert substrings of it
+    %w(OAuth my_consumer_key my_access_token oauth_version).each do |substring|
+      auth_header.must_include substring
     end
   end
 end

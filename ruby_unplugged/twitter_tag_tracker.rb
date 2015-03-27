@@ -10,18 +10,21 @@ class TwitterTagTracker
   end
 
   def each_tag(&blk)
-    uri = URI(TWITTER_API_URL)
-    Net::HTTP.start(uri.host, uri.port, use_ssl: uri.scheme == 'https') do |http|
-      request = Net::HTTP::Get.new(uri)
-      http.request(sign_request(request)) do |response|
-        response.read_body do |str|
-          parse_for_tags(str, &blk)
-        end
-      end
-    end
+    open_stream {|str| parse_for_tags(str, &blk)}
   end
 
-  # TODO private
+  private
+
+  def open_stream(&blk)
+    uri = URI(TWITTER_API_URL)
+    connection = Net::HTTP.new(uri.host, uri.port)
+    connection.use_ssl = true
+    request = sign_request(Net::HTTP::Get.new(uri))
+
+    connection.request(request) do |response|
+      response.read_body(&blk)
+    end
+  end
 
   def parse_for_tags(io)
     io.each_line do |line|
