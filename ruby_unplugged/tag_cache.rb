@@ -27,6 +27,12 @@ class TagCache
     tag
   end
 
+  def reset
+    @semaphore.synchronize {
+      @raw_array = []
+    }
+  end
+
   # returns a 10 element array consisting of 2 element pairs [tag, count]
   # sorted in descending count order, and secondarily by tag's alphabetical order
   def top10

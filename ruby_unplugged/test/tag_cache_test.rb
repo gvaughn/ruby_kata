@@ -2,14 +2,14 @@ require 'tag_cache'
 
 describe TagCache do
   describe "#top10" do
+
+    let(:now) {Time.now.to_i}
+    let(:sample) do
+      (0..65).step(5).map {|offset| [now - offset, "tag#{offset}"] }
+    end
+
     it "returns list of 10 tag/count pairs from last 60 seconds" do
-      now = Time.now.to_i
-      sample_data = (0..65).step(5).map {|offset|
-        [now - offset, "tag#{offset}"]
-      }
-      # This extra forces the oldest tag to be counted in the top 10
-      # since it's more frequent
-      sample_data.insert(1, [now - 2, "tag55"])
+      sample_data = sample.insert(1, [now - 2, "tag55"])
 
       tc = TagCache.new(data: sample_data)
       3.times {tc.put("extratag")}
@@ -19,6 +19,13 @@ describe TagCache do
       top10.first.must_equal ["extratag", 3]
       top10[1].must_equal ["tag55", 2]
       top10.last.must_equal ["tag40", 1] #secondary sort by tag makes this last
+    end
+
+    it "#reset empties data" do
+      tc = TagCache.new(data: sample)
+      tc.top10.wont_equal []
+      tc.reset
+      tc.top10.must_equal []
     end
 
     it "handles multiple threads" do
