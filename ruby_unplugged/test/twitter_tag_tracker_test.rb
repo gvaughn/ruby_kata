@@ -1,11 +1,14 @@
 require 'twitter_tag_tracker'
+#TODO don't use the suite's DATA
 
 describe TwitterTagTracker do
 
   describe "tag stream" do
     it "yields tags" do
+      #TODO test at the each_tag level
       tags = []
-      TwitterTagTracker.parse_for_tags(DATA) {|tag| tags << tag}
+      ttt = TwitterTagTracker.new({})
+      ttt.parse_for_tags(DATA) {|tag| tags << tag}
 
       tags.count.must_equal 26
 
@@ -26,7 +29,8 @@ describe TwitterTagTracker do
         access_token_secret: 'acccess_token_secret_will_be_crypto_signed'
       }
 
-      auth_header = TwitterTagTracker.sign_request(req, credentials)['Authorization']
+      ttt = TwitterTagTracker.new(credentials)
+      auth_header = ttt.sign_request(req)['Authorization']
 
       # it's a complex header, but we can assert substrings of it
       %w(OAuth my_consumer_key my_access_token oauth_version).each do |substring|

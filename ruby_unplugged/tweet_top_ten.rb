@@ -18,6 +18,7 @@ class TweetTopTen
     setup_traps
 
     @tag_cache = TagCache.new
+    @tag_stream = TwitterTagTracker.new(YAML.load_file(@credentials_filename))
     @server = setup_endpoint
 
     start_tag_stream
@@ -25,7 +26,8 @@ class TweetTopTen
   end
 
   def reset(_arg = 1)
-    puts "pretend I reset"
+    @tag_cache.reset
+    # TODO stream.reset
   end
 
   def quit(_arg = 1)
@@ -43,10 +45,8 @@ class TweetTopTen
   end
 
   def start_tag_stream
-    creds = YAML.load_file(@credentials_filename)
-
     Thread.new do
-      TwitterTagTracker.each_tag(creds) {|tag| @tag_cache.put(tag)}
+      @tag_stream.each_tag {|tag| @tag_cache.put(tag)}
     end
   end
 

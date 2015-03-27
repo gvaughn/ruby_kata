@@ -7,4 +7,5 @@ require 'yaml'
 require 'twitter_tag_tracker'
 
 creds = YAML.load_file('credentials.yml')
-TwitterTagTracker.each_tag(creds) {|tag| puts tag}
+ttt = TwitterTagTracker.new(creds)
+ttt.each_tag {|tag| puts tag}
