@@ -36,7 +36,7 @@ class TweetTopTen
   end
 
   def quit(_arg = 1)
-    # TODO close tag stream
+    @tag_stream.close
     @server.shutdown
   end
 

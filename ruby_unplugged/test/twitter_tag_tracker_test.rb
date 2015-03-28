@@ -27,7 +27,11 @@ describe TwitterTagTracker do
   end
 
   it "can #close" do
-    #TODO call connection.finish
+    @mock_connection = MiniTest::Mock.new
+    @mock_connection.expect(:finish, true)
+    # this is heavy handed. I'm tempted not to write this test at all
+    subject.instance_variable_set(:@connection, @mock_connection)
+    subject.close
   end
 
   it "adds oauth Authorization header" do

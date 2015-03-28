@@ -17,15 +17,18 @@ class TwitterTagTracker
     retry
   end
 
+  def close
+    @connection.finish if @connection
+  end
   private
 
   def open_stream(&blk)
     uri = URI(TWITTER_API_URL)
-    connection = Net::HTTP.new(uri.host, uri.port)
-    connection.use_ssl = true
+    @connection = Net::HTTP.new(uri.host, uri.port)
+    @connection.use_ssl = true
     request = sign_request(Net::HTTP::Get.new(uri))
 
-    connection.request(request) do |response|
+    @connection.request(request) do |response|
       response.read_body(&blk)
     end
   end
