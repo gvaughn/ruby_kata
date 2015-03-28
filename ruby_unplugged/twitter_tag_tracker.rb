@@ -11,18 +11,27 @@ class TwitterTagTracker
 
   def each_tag(&blk)
     open_stream {|str| parse_for_tags(str, &blk)}
-  rescue SocketError => e
-    puts "connection problem, \"#{e}\" retrying in 10 seconds ..."
-    sleep 10
-    retry
+  rescue SocketError => se
+    unless @quit
+      puts "connection problem, \"#{se}\" retrying in 10 seconds ..."
+      sleep 10
+      retry
+    end
+  # rescue Exception => e
+  #   puts "rescued in each_tag: #{e.class} #{e}\n#{e.backtrace.join("\n")}"
   end
 
   def close
+    @quit = true
     @connection.finish if @connection
+  rescue IOError
+    #raised if not already started, so no action
   end
+
   private
 
   def open_stream(&blk)
+    @quit = false
     uri = URI(TWITTER_API_URL)
     @connection = Net::HTTP.new(uri.host, uri.port)
     @connection.use_ssl = true
