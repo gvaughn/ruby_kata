@@ -11,6 +11,10 @@ class TwitterTagTracker
 
   def each_tag(&blk)
     open_stream {|str| parse_for_tags(str, &blk)}
+  rescue SocketError => e
+    puts "connection problem, \"#{e}\" retrying in 10 seconds ..."
+    sleep 10
+    retry
   end
 
   private
@@ -29,6 +33,7 @@ class TwitterTagTracker
   def parse_for_tags(io)
     io.each_line do |line|
       begin
+        # TODO try to figure out why each tag is arrayed
         JSON.parse(line).fetch('text', '').scan(TAG_REGEX).each {|tag| yield tag.first}
       rescue JSON::ParserError
         next

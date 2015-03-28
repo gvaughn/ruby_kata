@@ -43,15 +43,19 @@ class TweetTopTen
   private
 
   def setup_traps
-    trap('INT',  'EXIT')
+    trap('INT',  'EXIT') #ctrl-c
     trap('TERM', 'EXIT')
     trap('HUP',  method(:reset))
-    trap('QUIT', method(:quit))
+    trap('QUIT', method(:quit)) #ctrl-\ or ctrl-y
   end
 
   def start_tag_stream
     Thread.new do
-      @tag_stream.each_tag {|tag| @tag_cache << tag}
+      begin
+        @tag_stream.each_tag {|tag| @tag_cache << tag}
+      rescue e
+        puts "rescued in reader thread: {e.class} #{e}\n#{e.backtrace.join("\n")}"
+      end
     end
   end
 

@@ -13,9 +13,13 @@ class TagCache
     # We could do this with each #put, but I'd expect better throughput
     # from this instead
     Thread.new {
-      while(true)
-        sleep truncate_interval
-        truncate_old_data
+      begin
+        while(true)
+          sleep truncate_interval
+          truncate_old_data
+        end
+      rescue
+        retry
       end
     }
   end
