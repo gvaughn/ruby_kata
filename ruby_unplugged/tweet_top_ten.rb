@@ -1,4 +1,8 @@
 #! /usr/bin/env ruby
+#TODO an integration test
+# use something like stub in TwitterTagTracker#each_tag yields tags but
+# wrapper the File#each_line, when done reset the pointer and wrap in
+# while loop
 $LOAD_PATH.unshift File.expand_path '../', __FILE__
 
 require 'twitter_tag_tracker'
@@ -26,8 +30,9 @@ class TweetTopTen
   end
 
   def reset(_arg = 1)
+    # TODO kill tag_stream_thread, close tag_stream
     @tag_cache.reset
-    # TODO stream.reset
+    # create new stream and thread
   end
 
   def quit(_arg = 1)
@@ -46,7 +51,7 @@ class TweetTopTen
 
   def start_tag_stream
     Thread.new do
-      @tag_stream.each_tag {|tag| @tag_cache.put(tag)}
+      @tag_stream.each_tag {|tag| @tag_cache << tag}
     end
   end
 
@@ -74,4 +79,5 @@ class TweetTopTen
   end
 end
 
+# TODO make separate top level script
 TweetTopTen.new('./credentials.yml', 8080).start

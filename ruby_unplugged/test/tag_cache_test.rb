@@ -12,7 +12,7 @@ describe TagCache do
       sample_data = sample.insert(1, [now - 2, "tag55"])
 
       tc = TagCache.new(data: sample_data)
-      3.times {tc.put("extratag")}
+      3.times {tc << "extratag"}
       top10 = tc.top10
 
       top10.count.must_equal 10
@@ -33,12 +33,12 @@ describe TagCache do
       result = []
 
       t1 = Thread.new {
-        10.times {|n| tc.put("t#{n}-from1"); sleep 0.1}
+        10.times {|n| tc << "t#{n}-from1"; sleep 0.1}
       }
 
       t2 = Thread.new {
         sleep 0.1
-        12.times {|n| tc.put("t#{n}-from2"); sleep 0.05}
+        12.times {|n| tc << "t#{n}-from2"; sleep 0.05}
       }
 
       t3 = Thread.new {

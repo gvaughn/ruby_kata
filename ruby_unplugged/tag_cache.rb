@@ -21,11 +21,13 @@ class TagCache
   end
 
   def put(tag)
+    # TODO could I accept array or individual tag?
     @semaphore.synchronize {
       @raw_array.unshift([Time.now.to_i, tag])
     }
     tag
   end
+  alias :<< :put
 
   def reset
     @semaphore.synchronize {
