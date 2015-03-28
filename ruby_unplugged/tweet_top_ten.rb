@@ -1,9 +1,9 @@
-#! /usr/bin/env ruby
 #TODO an integration test
 # use something like stub in TwitterTagTracker#each_tag yields tags but
 # wrapper the File#each_line, when done reset the pointer and wrap in
 # while loop
-$LOAD_PATH.unshift File.expand_path '../', __FILE__
+# TODO explore using Queue and separate produer and reader threads
+# then HUP is killing those threads, tag_cache.reset, restarting threads
 
 require 'twitter_tag_tracker'
 require 'tag_cache'
@@ -96,5 +96,3 @@ class TweetTopTen
   end
 end
 
-# TODO make separate top level script
-TweetTopTen.new('./credentials.yml', 8080).start

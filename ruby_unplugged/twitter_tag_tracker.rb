@@ -37,6 +37,7 @@ class TwitterTagTracker
     request = sign_request(Net::HTTP::Get.new(uri))
 
     puts "opening twitter stream"
+    #TODO adjust timeout
     @connection.request(request) do |response|
       response.read_body(&blk)
     end
