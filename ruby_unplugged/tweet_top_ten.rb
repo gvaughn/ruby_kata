@@ -25,19 +25,21 @@ class TweetTopTen
     @tag_stream = TwitterTagTracker.new(YAML.load_file(@credentials_filename))
     @server = setup_endpoint
 
-    start_tag_stream
+    @tag_stream_thread = start_tag_stream
     @server.start
   end
 
   def reset(_arg = 1)
-    # TODO kill tag_stream_thread, close tag_stream
-    @tag_cache.reset
-    # create new stream and thread
+    @tag_stream.close
+    @hup_reader_thread = true
+    @tag_stream_thread.run
+    Thread.pass
   end
 
   def quit(_arg = 1)
     @tag_stream.close
     @server.shutdown
+    exit(1)
   end
 
   private
@@ -46,15 +48,26 @@ class TweetTopTen
     trap('INT',  'EXIT') #ctrl-c
     trap('TERM', 'EXIT')
     trap('HUP',  method(:reset))
-    trap('QUIT', method(:quit)) #ctrl-\ or ctrl-y
+    trap('QUIT', method(:quit)) #ctrl-\
   end
 
   def start_tag_stream
     Thread.new do
-      begin
-        @tag_stream.each_tag {|tag| @tag_cache << tag}
-      rescue e
-        puts "rescued in reader thread: {e.class} #{e}\n#{e.backtrace.join("\n")}"
+      while(true)
+        catch(:bounce_reader) do
+          begin
+            @tag_stream.each_tag do |tag|
+              @tag_cache << tag
+              if @hup_reader_thread
+                throw :bounce_reader
+              end
+            end
+          rescue e
+            puts "rescued in reader thread: #{e.class} #{e}\n#{e.backtrace.join("\n")}"
+          end
+        end
+        @hup_reader_thread = false
+        @tag_cache.reset #caused ThreadError if executed within signal trap
       end
     end
   end

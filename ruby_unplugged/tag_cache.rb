@@ -34,6 +34,7 @@ class TagCache
   alias :<< :put
 
   def reset
+    puts "resetting tag cache statistics"
     @semaphore.synchronize {
       @raw_array = []
     }

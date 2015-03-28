@@ -17,11 +17,10 @@ class TwitterTagTracker
       sleep 10
       retry
     end
-  # rescue Exception => e
-  #   puts "rescued in each_tag: #{e.class} #{e}\n#{e.backtrace.join("\n")}"
   end
 
   def close
+    puts "closing twitter stream"
     @quit = true
     @connection.finish if @connection
   rescue IOError
@@ -37,6 +36,7 @@ class TwitterTagTracker
     @connection.use_ssl = true
     request = sign_request(Net::HTTP::Get.new(uri))
 
+    puts "opening twitter stream"
     @connection.request(request) do |response|
       response.read_body(&blk)
     end
