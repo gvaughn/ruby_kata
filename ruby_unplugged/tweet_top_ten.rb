@@ -54,8 +54,9 @@ class TweetTopTen
       loop do #in case tag_stream reconnects, we'll connect to new stream
         begin
           @tag_stream.each_tag {|tag| @tag_cache << tag}
-        rescue e
+        rescue StandardError => e
           puts "rescued in reader thread: #{e.class} #{e}\n#{e.backtrace.join("\n")}"
+          exit!
         end
       end
     end

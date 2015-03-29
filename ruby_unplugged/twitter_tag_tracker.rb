@@ -2,7 +2,7 @@ require 'oauth'
 require 'json'
 
 # This wrappers the oauth and https connection logic with tag parsing
-# logic and provides the caller with a simplified streaming #each_tag method 
+# logic and provides the caller with a simplified streaming #each_tag method
 class TwitterTagTracker
   TWITTER_API_URL = "https://stream.twitter.com/1.1/statuses/sample.json"
   TAG_REGEX = /\B#(\p{Word}+)/
@@ -52,6 +52,9 @@ class TwitterTagTracker
 
     puts "opening twitter stream"
     @connection.request(request) do |response|
+      unless response.code == 200
+        raise RuntimeError, "#{response.code} from twitter. Bad credentials maybe."
+      end
       response.read_body(&blk)
     end
   end
