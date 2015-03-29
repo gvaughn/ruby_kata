@@ -1,5 +1,20 @@
 #! /usr/bin/env ruby
 $LOAD_PATH.unshift File.expand_path '../', __FILE__
+require 'yaml'
+require 'twitter_tag_tracker'
 require 'tweet_top_ten'
 
-TweetTopTen.new('./credentials.yml', 8080).start
+credentials_filename = './credentials.yml'
+
+unless File.exist?(credentials_filename)
+  puts """
+  No credentials.yml file found in current directory.
+  Please copy credentials_sample.yml to credentials.yml and enter the oauth credentials.
+  It would be bad security practice had I left mine in there.
+  """
+  exit!
+end
+
+streamer = TwitterTagTracker.new(YAML.load_file(credentials_filename))
+
+TweetTopTen.new(streamer, 8080).start

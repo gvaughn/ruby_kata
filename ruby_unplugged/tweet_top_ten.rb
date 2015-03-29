@@ -3,24 +3,20 @@
 # wrapper the File#each_line, when done reset the pointer and wrap in
 # while loop
 
-require 'twitter_tag_tracker'
 require 'tag_cache'
 require 'webrick'
-require 'yaml'
 
 class TweetTopTen
 
-  def initialize(credentials_filename, port)
-    @credentials_filename = credentials_filename
+  def initialize(streamer, port)
+    @tag_stream = streamer
     @port = port
   end
 
   def start
-    validate_credentials_exist
     setup_traps
 
     @tag_cache = TagCache.new
-    @tag_stream = TwitterTagTracker.new(YAML.load_file(@credentials_filename))
     @server = setup_endpoint
 
     @tag_stream_thread = start_tag_stream
@@ -72,17 +68,6 @@ class TweetTopTen
 
   def jsonify(tag_count_pairs)
     JSON.generate({'top10' => tag_count_pairs.map {|t, c| {'tag' => t, 'count' => c}}})
-  end
-
-  def validate_credentials_exist
-    unless File.exist?(@credentials_filename)
-      puts """
-      No credentials.yml file found in current directory.
-      Please copy credentials_sample.yml to credentials.yml and enter the oauth credentials.
-      It would be bad security practice had I left mine in there.
-      """
-      exit!
-    end
   end
 end
 
