@@ -1,8 +1,9 @@
+require 'minitest/autorun'
 require 'twitter_tag_tracker'
 
 describe TwitterTagTracker do
 
-  let(:subject) {TwitterTagTracker.new(credentials)}
+  subject {TwitterTagTracker.new(credentials)}
   let(:credentials) {
       { consumer_key: 'my_consumer_key',
         consumer_secret: 'consumer_secret_will_be_crypto_signed',

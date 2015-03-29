@@ -1,6 +1,8 @@
+require 'minitest/autorun'
 require 'tag_cache'
 
 describe TagCache do
+
   describe "#top10" do
 
     let(:now) {Time.now.to_i}
@@ -29,20 +31,20 @@ describe TagCache do
     end
 
     it "handles multiple threads" do
-      tc = TagCache.new(truncate_interval: 0.1)
+      tc = TagCache.new(truncate_interval: 0.02)
       result = []
 
       t1 = Thread.new {
-        10.times {|n| tc << "t#{n}-from1"; sleep 0.1}
+        10.times {|n| tc << "t#{n}-from1"; sleep 0.02}
       }
 
       t2 = Thread.new {
-        sleep 0.1
-        12.times {|n| tc << "t#{n}-from2"; sleep 0.05}
+        sleep 0.02
+        12.times {|n| tc << "t#{n}-from2"; sleep 0.01}
       }
 
       t3 = Thread.new {
-        sleep 0.9
+        sleep 0.2
         result = tc.top10
       }
 

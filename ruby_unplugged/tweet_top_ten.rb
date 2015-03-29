@@ -1,8 +1,3 @@
-#TODO an integration test
-# use something like stub in TwitterTagTracker#each_tag yields tags but
-# wrapper the File#each_line, when done reset the pointer and wrap in
-# while loop
-
 require 'tag_cache'
 require 'webrick'
 
