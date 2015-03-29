@@ -32,11 +32,12 @@ class TagCache
   end
   alias :<< :put
 
+  # empties the list of seen tags
+  # note: this is not a synchronized operation
+  # because that cannot be called in a signal trap handler
   def reset
     puts "resetting tag cache statistics"
-    @semaphore.synchronize {
-      @raw_array = []
-    }
+    @raw_array = []
   end
 
   # returns a 10 element array consisting of 2 element pairs [tag, count]
