@@ -34,10 +34,10 @@ class TwitterTagTracker
     uri = URI(TWITTER_API_URL)
     @connection = Net::HTTP.new(uri.host, uri.port)
     @connection.use_ssl = true
+    @connection.open_timeout = 5
     request = sign_request(Net::HTTP::Get.new(uri))
 
     puts "opening twitter stream"
-    #TODO adjust timeout
     @connection.request(request) do |response|
       response.read_body(&blk)
     end
@@ -46,8 +46,7 @@ class TwitterTagTracker
   def parse_for_tags(io)
     io.each_line do |line|
       begin
-        # TODO try to figure out why each tag is arrayed
-        JSON.parse(line).fetch('text', '').scan(TAG_REGEX).each {|tag| yield tag.first}
+        JSON.parse(line).fetch('text', '').scan(TAG_REGEX) {|(tag)| yield tag}
       rescue JSON::ParserError
         next
       end

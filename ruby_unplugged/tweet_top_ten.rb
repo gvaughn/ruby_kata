@@ -53,21 +53,21 @@ class TweetTopTen
 
   def start_tag_stream
     Thread.new do
-      while(true)
-        catch(:bounce_reader) do
-          begin
+      begin
+        while(true)
+          catch(:bounce_reader) do
             @tag_stream.each_tag do |tag|
               @tag_cache << tag
               if @hup_reader_thread
                 throw :bounce_reader
               end
             end
-          rescue e
-            puts "rescued in reader thread: #{e.class} #{e}\n#{e.backtrace.join("\n")}"
           end
+          @hup_reader_thread = false
+          @tag_cache.reset #caused ThreadError if executed within signal trap
         end
-        @hup_reader_thread = false
-        @tag_cache.reset #caused ThreadError if executed within signal trap
+        rescue e
+          puts "rescued in reader thread: #{e.class} #{e}\n#{e.backtrace.join("\n")}"
       end
     end
   end
