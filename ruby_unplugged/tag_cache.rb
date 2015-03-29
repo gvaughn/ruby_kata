@@ -1,3 +1,5 @@
+# Manage a rolling window of [tag, timestamp] pairs and provide a
+# summary of top 10 popular tags in any 60 second window
 class TagCache
 
   # data is an initial dataset. TODO validate format (but only used for tests thus far)
@@ -24,6 +26,7 @@ class TagCache
     }
   end
 
+  # adds tag to cache
   def put(tag)
     @semaphore.synchronize {
       @raw_array.unshift([Time.now.to_i, tag])

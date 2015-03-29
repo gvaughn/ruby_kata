@@ -11,6 +11,8 @@ unless File.exist?(credentials_filename)
   No credentials.yml file found in current directory.
   Please copy credentials_sample.yml to credentials.yml and enter the oauth credentials.
   It would be bad security practice had I left mine in there.
+
+  You may also use man_tag_stream to verify the credentials are working with twitter.
   """
   exit!
 end

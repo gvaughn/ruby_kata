@@ -1,8 +1,9 @@
 #! /usr/bin/env ruby
-# This is a handy manual verification that oauth is happening with Twitter
-
-# add current directory to load path
 $LOAD_PATH.unshift File.expand_path '../', __FILE__
+
+# This is a handy manual verification that oauth is happening with Twitter
+# and credentials is properly set up
+
 require 'yaml'
 require 'twitter_tag_tracker'
 

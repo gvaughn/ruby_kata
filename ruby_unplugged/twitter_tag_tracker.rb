@@ -1,15 +1,21 @@
 require 'oauth'
 require 'json'
 
+# This wrappers the oauth and https connection logic with tag parsing
+# logic and provides the caller with a simplified streaming #each_tag method 
 class TwitterTagTracker
   TWITTER_API_URL = "https://stream.twitter.com/1.1/statuses/sample.json"
   TAG_REGEX = /\B#(\p{Word}+)/
 
+  # credentials is a Hash containing 4 oauth required values,
+  #  consumer_key, consumer_secret, access_token, and access_token_secret
+  #  expecting those as symbol keys
   def initialize(credentials)
     @credentials = credentials
     @stop = false
   end
 
+  # Repeatedly yields to the required block a String tag
   def each_tag(&blk)
     open_stream {|str| parse_for_tags(str, &blk)}
   rescue SocketError => se
@@ -20,6 +26,7 @@ class TwitterTagTracker
     end
   end
 
+  # Closes the stream from twitter
   def close
     puts "closing twitter stream"
     @stop = true
@@ -28,6 +35,7 @@ class TwitterTagTracker
     #raised if not already started, so no action
   end
 
+  # Enables the connection to twitter to restart
   def restart
     @stop = false
   end
