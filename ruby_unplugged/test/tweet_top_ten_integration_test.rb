@@ -5,8 +5,11 @@ require 'json'
 
 class TagStreamSimulator
 
-  def each_tag
+  def initialize
     @queue = Queue.new
+  end
+
+  def each_tag
     yield @queue.pop
   end
 
