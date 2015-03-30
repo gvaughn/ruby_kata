@@ -40,11 +40,15 @@ class TweetTopTen
     @server.shutdown
   end
 
+  def interrupt(_arg = 1)
+    exit!
+  end
+
   private
 
   def setup_traps
-    trap('INT',  'EXIT') #ctrl-c
-    trap('TERM', 'EXIT')
+    trap('INT',  method(:interrupt)) #ctrl-c
+    trap('TERM', method(:interrupt))
     trap('HUP',  method(:reset))
     trap('QUIT', method(:quit)) #ctrl-\
   end
@@ -53,11 +57,17 @@ class TweetTopTen
     Thread.new do
       loop do #in case tag_stream reconnects, we'll connect to new stream
         begin
-          @tag_stream.each_tag {|tag| @tag_cache << tag}
+          @tag_stream.each_tag {|tag| puts "received tag: #{tag}"; @tag_cache << tag}
         rescue StandardError => e
-          puts "rescued in reader thread: #{e.class} #{e}\n#{e.backtrace.join("\n")}"
-          exit!
+          if e.message =~ /420/
+            puts "rate limiting by twitter, pausing 30 seconds to re-connect"
+            sleep 30
+          else
+            puts "rescued in reader thread: #{e.class} #{e}\n#{e.backtrace.join("\n")}"
+            exit!
+          end
         end
+        sleep 2 #delay before forcing a reconnect
       end
     end
   end

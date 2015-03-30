@@ -31,8 +31,11 @@ class TwitterTagTracker
     puts "closing twitter stream"
     @stop = true
     @connection.finish if @connection
+    Thread.pass
   rescue IOError
     #raised if not already started, so no action
+  rescue StandardError => e
+    puts "rescued in close: #{e.class} #{e}\n#{e.backtrace.join("\n")}"
   end
 
   # Enables the connection to twitter to restart
@@ -52,11 +55,18 @@ class TwitterTagTracker
 
     puts "opening twitter stream"
     @connection.request(request) do |response|
-      unless response.code == 200
-        raise RuntimeError, "#{response.code} from twitter. Bad credentials maybe."
+      # rate limiting is a Net::HTTPClientError (420)
+      # twitter is supposed to have rate limit info in Headers https://dev.twitter.com/rest/public/rate-limiting
+      # but they're not there  response.each_header {|key,value| puts "#{key} = #{value}" }
+      unless Net::HTTPOK === response
+        raise RuntimeError, "#{response.code} from twitter. #{response.body}. Bad credentials maybe?"
       end
       response.read_body(&blk)
     end
+  rescue TypeError, Errno::EBADF, Net::HTTPBadResponse, OpenSSL::SSL::SSLError, NoMethodError => _e
+    # these all can happen due to closing from a the signal handler thread
+    # ignoring them allows tag_stream_thread in TweetTopTen to reconnect
+    #puts "rescued in open_stream: #{e.class} #{e}\n#{e.backtrace.join("\n")}"
   end
 
   def parse_for_tags(io)
