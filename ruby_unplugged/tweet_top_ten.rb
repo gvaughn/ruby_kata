@@ -57,7 +57,7 @@ class TweetTopTen
     Thread.new do
       loop do #in case tag_stream reconnects, we'll connect to new stream
         begin
-          @tag_stream.each_tag {|tag| puts "received tag: #{tag}"; @tag_cache << tag}
+          @tag_stream.each_tag {|tag| @tag_cache << tag}
         rescue StandardError => e
           if e.message =~ /420/
             puts "rate limiting by twitter, pausing 30 seconds to re-connect"
@@ -67,7 +67,6 @@ class TweetTopTen
             exit!
           end
         end
-        sleep 2 #delay before forcing a reconnect
       end
     end
   end

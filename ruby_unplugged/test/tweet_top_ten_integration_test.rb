@@ -12,9 +12,9 @@ class TagStreamSimulator
 
   def send(tag)
     @queue << tag
-    # oddly, Thread.pass doesn't get the job done
-    # empirically, this delay is working on my machine consistently
-    # I dislike tests that rely on sleep, but tolerate them in integration tests
+    # Oddly, Thread.pass doesn't get the job done.
+    # Empirically, this delay is working on my machine consistently.
+    # I dislike tests that rely on sleep, but tolerate them in integration tests.
     sleep 0.003
   end
 
