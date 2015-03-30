@@ -25,11 +25,9 @@ class TweetTopTen
 
   # closes and reopens the twitter stream plus clears all statistics
    def reset(_arg = 1)
-     @tag_stream_thread.kill
      @tag_stream.close
      @tag_cache.reset
      @tag_stream.restart
-     @tag_stream_thread = start_tag_stream
    end
 
    # graceful shutdown
