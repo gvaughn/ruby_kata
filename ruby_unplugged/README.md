@@ -40,7 +40,7 @@ BOOM!!!
 OK. Seriously, here's how to use this code.
 
 This was written against the latest Ruby release, 2.2.1. I'm using named
-parameters, so you'll definitely need a 2.x, but I haven't tested
+parameters, so you'll definitely need a 1.9+, but I haven't tested
 against any others. I have a .ruby-version file, so modern Ruby managers
 should pick up on that.
 
