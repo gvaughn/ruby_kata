@@ -44,6 +44,11 @@ parameters, so you'll definitely need a 2.x, but I haven't tested
 against any others. I have a .ruby-version file, so modern Ruby managers
 should pick up on that.
 
+You'll need twitter credentials because I'm not sharing. You can learn
+more about that [here](https://dev.twitter.com/faq#46) and
+[here](https://dev.twitter.com/oauth/application-only). Then follow the
+instruction in credentials_sample.yml to create your credentials.yml file.
+
 I'm going without bundler or rake here, but the good news is since we
 only allow a single gem, just a single
 `gem install oauth`
