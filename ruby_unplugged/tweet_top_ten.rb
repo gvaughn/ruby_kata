@@ -33,9 +33,9 @@ class TweetTopTen
    # graceful shutdown
    # may be delayed by closing of twitter stream and thread scheduling
   def quit(_arg = 1)
-    @tag_stream_thread.kill
-    @tag_stream.close
     @server.shutdown
+    @tag_stream.close
+    @tag_stream_thread.kill
   end
 
   def interrupt(_arg = 1)
